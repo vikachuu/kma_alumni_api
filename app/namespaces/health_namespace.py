@@ -1,4 +1,3 @@
-from flask import render_template_string
 from flask_restplus import Namespace, Resource
 
 
