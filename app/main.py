@@ -23,7 +23,7 @@ cors = CORS(web_app, resources={r"/api/*": {"origins": "*"}})
 odoo_url = os.getenv('ODOO_URL')
 odoo_db = os.getenv('ODOO_DB')
 odoo_username = os.getenv('ODOO_USERNAME')
-odoo_password = os.getnev('ODOO_PASSWORD')
+odoo_password = os.getenv('ODOO_PASSWORD')
 
 odoo_common = client.ServerProxy('{}/xmlrpc/2/common'.format(odoo_url))
 odoo_uid = odoo_common.authenticate(odoo_db, odoo_username, odoo_password, {})
