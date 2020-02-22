@@ -1,21 +1,26 @@
 from flask import request
-from flask_restplus import Namespace, Resource
+from flask_restplus import Namespace, Resource, fields
 
 
 api_alumni = Namespace('alumni', description='Requests to alumni model')
 
+resource_fields = api_alumni.model('Create alumni user payload', {
+    "odoo_contact_id": fields.String,
+    "email": fields.String,
+    "password": fields.String,
+})
+
 
 @api_alumni.route("/")
-@api_alumni.doc(params={
+class Alumni(Resource):
+
+    @api_alumni.doc(params={
                     'offset': 'Offset value for pagination. Default: 0.',
                     'limit': 'Limit value for pagination. Default: 0.',
                     'tag': 'Filter by tag from Odoo contact. For example - \'Alumni\'',
                     'is_activated': 'Returns only activated in alumni service alumni if `True`, all others if `False`.'})
-class Alumni(Resource):
-
     def get(self):
-        """
-        Return all alumni
+        """Return all alumni
         """
 
         query_params = request.args
@@ -48,3 +53,11 @@ class Alumni(Resource):
             return [x for x in contacts if x['id'] not in activated_alumni_ids]
 
         return contacts
+
+    @api_alumni.doc(body=resource_fields)
+    def post(self):
+        """Create alumni user
+        """
+        from app.controllers.alumni_controller import AlumniController
+        post_data = request.get_json()
+        return AlumniController.create_alumni_user(post_data)

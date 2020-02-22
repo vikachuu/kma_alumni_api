@@ -1,4 +1,4 @@
-from app.main import db
+from app.main import db, flask_bcrypt
 
 
 class Alumni(db.Model):
@@ -6,16 +6,17 @@ class Alumni(db.Model):
 
     alumni_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     odoo_contact_id = db.Column(db.String(100), unique=True, nullable=False)
-    alumni_status = db.Column(db.String(100)) 
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     user_confirmed = db.Column(db.Boolean())
 
     # repetition =  db.relationship("Repetition", back_populates="admin")
 
-    def __init__(self, odoo_contact_id, alumni_status, email, password, user_confirmed=False):
+    def __init__(self, odoo_contact_id, email, password):
         self.odoo_contact_id = odoo_contact_id
-        self.alumni_status = alumni_status
         self.email = email
-        self.password = password
-        self.user_confirmed = user_confirmed
+        self.password = flask_bcrypt.generate_password_hash(password).decode()
+        self.user_confirmed = False
+
+    def check_password(self, password):
+        return flask_bcrypt.check_password_hash(self.password, password)

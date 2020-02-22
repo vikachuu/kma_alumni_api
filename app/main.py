@@ -4,6 +4,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_heroku import Heroku
 from flask_cors import CORS
+from flask_bcrypt import Bcrypt
 
 from xmlrpc import client
 
@@ -18,6 +19,7 @@ web_app.register_blueprint(api, url_prefix='/api/v1')
 db = SQLAlchemy(web_app)
 heroku = Heroku(web_app)
 cors = CORS(web_app, resources={r"/api/*": {"origins": "*"}})
+flask_bcrypt = Bcrypt(web_app)
 
 # initialize Odoo
 odoo_url = os.getenv('ODOO_URL')
