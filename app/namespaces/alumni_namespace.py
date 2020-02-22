@@ -9,7 +9,8 @@ api_alumni = Namespace('alumni', description='Requests to alumni model')
 @api_alumni.doc(params={
                     'offset': 'Offset value for pagination. Default: 0.',
                     'limit': 'Limit value for pagination. Default: 0.',
-                    'tag': 'Filter by tag from Odoo contact. For example - \'Alumni\''})
+                    'tag': 'Filter by tag from Odoo contact. For example - \'Alumni\'',
+                    'is_activated': 'Returns only activated in alumni service alumni if `True`, all others if `False`.'})
 class Alumni(Resource):
 
     def get(self):
@@ -19,8 +20,9 @@ class Alumni(Resource):
 
         query_params = request.args
         offset = query_params.get('offset', 0)
-        limit = query_params.get('limit', 1)
+        limit = query_params.get('limit', 0)
         tag = query_params.get('tag')
+        is_activated = query_params.get('is_activated')
 
         filter_list = []
         filter_list.append(['is_company', '=', False])
@@ -35,5 +37,14 @@ class Alumni(Resource):
                 'image_1920'],
                 'offset': int(offset),
                 'limit': int(limit)})
+
+        # Get all activated alumni ids from alumni service
+        from app.controllers.alumni_controller import AlumniController
+        activated_alumni_ids = AlumniController.get_all_alumni_ids()
+
+        if is_activated == 'True':
+            return [x for x in contacts if x['id'] in activated_alumni_ids]
+        elif is_activated == 'False':
+            return [x for x in contacts if x['id'] not in activated_alumni_ids]
 
         return contacts
