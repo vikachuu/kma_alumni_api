@@ -30,10 +30,10 @@ class AlumniController:
                             "odoo_contact_id": alumni.odoo_contact_id,
                             "email": alumni.email,
                             "password": alumni.password,
-                        },
+                        }},
                     "status": 201,
                     "error": None
-                    }}
+                    }
         else:
             return {"data": {
                         "alumni": {
@@ -41,7 +41,7 @@ class AlumniController:
                             "odoo_contact_id": alumni.odoo_contact_id,
                             "email": alumni.email,
                             "password": alumni.password,
-                        },
+                        }},
                     "status": 200,
                     "error": f"Alumni {alumni.email} already exists."
-                    }}
+                    }
