@@ -10,6 +10,11 @@ class AlumniController:
         return alumni_ids
 
     @staticmethod
+    def check_alumni_with_uuid_exists(alumni_uuid):
+        alumni = Alumni.query.filter_by(alumni_uuid=alumni_uuid).first()
+        return alumni
+
+    @staticmethod
     def create_alumni_user(post_data):
         # check if user already exists
         alumni = Alumni.query.filter_by(odoo_contact_id=post_data.get('odoo_contact_id')).first()
@@ -28,8 +33,10 @@ class AlumniController:
                         "alumni": {
                             "alumni_id": alumni.alumni_id,
                             "odoo_contact_id": alumni.odoo_contact_id,
+                            "alumni_uuid": alumni.alumni_uuid,
                             "email": alumni.email,
-                            "password": alumni.password,
+                            "password": alumni.password
+                            "confirmed": alumni.user_confirmed,
                         }},
                     "status": 201,
                     "error": None
@@ -39,9 +46,15 @@ class AlumniController:
                         "alumni": {
                             "alumni_id": alumni.alumni_id,
                             "odoo_contact_id": alumni.odoo_contact_id,
+                            "alumni_uuid": alumni.alumni_uuid,
                             "email": alumni.email,
                             "password": alumni.password,
+                            "confirmed": alumni.user_confirmed,
                         }},
                     "status": 200,
                     "error": f"Alumni {alumni.email} already exists."
                     }
+
+    @staticmethod
+    def update_alumni_user(post_data):
+        pass
