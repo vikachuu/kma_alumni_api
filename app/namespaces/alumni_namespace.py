@@ -49,7 +49,7 @@ class Alumni(Resource):
 
         # map odoo contacts with statuses
         for x in contacts:
-            status = not_activated_alumni_records.get(x['id'])
+            status = not_activated_alumni_records.get(str(x['id']))
             x.update({
                 "alumni_status": status if status else "not invited"
             })

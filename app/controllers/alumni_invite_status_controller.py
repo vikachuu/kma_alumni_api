@@ -55,6 +55,7 @@ class AlumniInviteStatusController:
         if record is not None:
             record.invite_status = put_data.get('invite_status')
             record.status_set_date = datetime.now().date()
+            db.session.add(record)
             db.session.commit()
 
             return {"data": None,

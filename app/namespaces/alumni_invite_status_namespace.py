@@ -13,6 +13,10 @@ invite_status_fields = api_alumni_invite_status.model('Alumni invite status payl
 @api_alumni_invite_status.route("/")
 class AlumniInviteStatus(Resource):
 
+    def get(self):
+        from app.controllers.alumni_invite_status_controller import AlumniInviteStatusController
+        return AlumniInviteStatusController.get_id_status_records_dict()
+
     @api_alumni_invite_status.doc(body=invite_status_fields)
     def post(self):
         """Create new alumni status record.

@@ -11,7 +11,7 @@ api_register_link = Namespace('register_link', description='Requests to get link
 def encode_token(odoo_contact_id):
     key = os.getenv('SECRET_FERNET_KEY')
     f = Fernet(key.encode('utf-8'))
-    token = f"{odoo_contact_id} {datetime.now() + timedelta(days=1)}"  # add expiration date
+    token = f"{odoo_contact_id} {datetime.now() + timedelta(days=7)}"  # add expiration date
     token = f.encrypt(token.encode('utf-8'))
     return token.decode('utf-8')
 
@@ -22,7 +22,7 @@ def encode_token(odoo_contact_id):
 class RegisterLink(Resource):
 
     def get(self, odoo_contact_id):
-        """Return generated unique link for alumni to register. Link will be expired in 1.
+        """Return generated unique link for alumni to register. Link will be expired in 1 week.
         """
         # check if such odoo user exists
         from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
@@ -39,6 +39,14 @@ class RegisterLink(Resource):
 
         # encrypt odoo user id
         token = encode_token(odoo_contact_id)
+
+        # create/update record in alumni invite status
+        from app.controllers.alumni_invite_status_controller import AlumniInviteStatusController
+        put_data = {
+            "odoo_contact_id": odoo_contact_id,
+            "invite_status": "invited"
+        }
+        response = AlumniInviteStatusController.update_invite_status_record(put_data)
 
         return {"data": {
                         "token": token
