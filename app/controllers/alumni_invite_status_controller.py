@@ -7,19 +7,12 @@ from app.models.alumni_invite_status_model import AlumniInviteStatus
 class AlumniInviteStatusController:
 
     @staticmethod
-    def get_all_records():
+    def get_id_status_records_dict():
         records = AlumniInviteStatus.query.all()
-        records_list = []
+        records_dict = {}
         for record in records:
-            records_list.append({"odoo_contact_id": record.odoo_contact_id,
-                                "invite_status": record.invite_status,
-                                "status_set_date": record.status_set_date.strftime('%Y-%m-%d')})
-        return {"data": {
-                        "records": records_list,
-                        },
-                "status": 200,
-                "error": None
-                } 
+            records_dict[record.odoo_contact_id] = record.invite_status
+        return records_dict
 
     @staticmethod
     def create_invite_status_record(post_data):

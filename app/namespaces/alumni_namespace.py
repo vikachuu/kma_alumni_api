@@ -43,16 +43,36 @@ class Alumni(Resource):
                 'offset': int(offset),
                 'limit': int(limit)})
 
-        # Get all activated alumni ids from alumni service
-        from app.controllers.alumni_controller import AlumniController
-        activated_alumni_ids = AlumniController.get_all_alumni_ids()
+        # Get all activated alumni ids with statuses
+        from app.controllers.alumni_invite_status_controller import AlumniInviteStatusController
+        not_activated_alumni_records = AlumniInviteStatusController.get_id_status_records_dict()
+
+        # map odoo contacts with statuses
+        for x in contacts:
+            status = not_activated_alumni_records.get(x['id'])
+            x.update({
+                "alumni_status": status if status else "not invited"
+            })
 
         if is_activated == 'True':
-            return [x for x in contacts if x['id'] in activated_alumni_ids]
+            return {
+                "data": [x for x in contacts if x['alumni_status'] == "registered"],
+                "status": 200,
+                "error": None
+            }
+            
         elif is_activated == 'False':
-            return [x for x in contacts if x['id'] not in activated_alumni_ids]
+            return {
+                "data": [x for x in contacts if x['alumni_status'] != "registered"],
+                "status": 200,
+                "error": None
+            }
 
-        return contacts
+        return {
+                "data": contacts,
+                "status": 200,
+                "error": None
+            }
 
     @api_alumni.doc(body=resource_fields)
     def post(self):
