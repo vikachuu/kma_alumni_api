@@ -81,3 +81,36 @@ class Alumni(Resource):
         from app.controllers.alumni_controller import AlumniController
         post_data = request.get_json()
         return AlumniController.create_alumni_user(post_data)
+
+
+@api_alumni.route("/<odoo_contact_id>")
+class AlumniId(Resource):
+
+    @api_alumni.doc(params={
+                    'odoo_contact_id': 'An Odoo contact id.',
+                    'tag': 'Filter by tag from Odoo contact. For example - \'Alumni\'',})
+    def get(self, odoo_contact_id):
+        """Get odoo contact by id
+        """
+        query_params = request.args
+        tag = query_params.get('tag')
+
+        filter_list = []
+        filter_list.append(['id', '=', int(odoo_contact_id)])
+        filter_list.append(['category_id', '=', tag]) if tag else None
+
+        from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
+        contact = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
+                [filter_list],
+                {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link',
+                'bachelor_degree', 'bachelor_faculty', 'bachelor_speciality', 'bachelor_year_in', 'bachelor_year_out',
+                'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
+                'image_1920'],})
+
+        return {
+                "data": {
+                    "alumni": contact
+                },
+                "status": 200,
+                "error": None
+                }
