@@ -5,12 +5,7 @@ from app.models.alumni_model import Alumni
 class AlumniController:
 
     @staticmethod
-    def get_all_alumni_ids():
-        alumni_ids = db.session.query(Alumni.alumni_id).all()
-        return alumni_ids
-
-    @staticmethod
-    def check_alumni_with_uuid_exists(alumni_uuid):
+    def get_alumni_by_uuid(alumni_uuid):
         alumni = Alumni.query.filter_by(alumni_uuid=alumni_uuid).first()
         return alumni
 
@@ -36,7 +31,7 @@ class AlumniController:
                             "alumni_uuid": alumni.alumni_uuid,
                             "email": alumni.email,
                             "password": alumni.password,
-                            "confirmed": alumni.user_confirmed,
+                            "user_confirmed": alumni.user_confirmed,
                         }},
                     "status": 201,
                     "error": None
@@ -49,12 +44,21 @@ class AlumniController:
                             "alumni_uuid": alumni.alumni_uuid,
                             "email": alumni.email,
                             "password": alumni.password,
-                            "confirmed": alumni.user_confirmed,
+                            "user_confirmed": alumni.user_confirmed,
                         }},
                     "status": 200,
                     "error": f"Alumni already exists."
                     }
 
     @staticmethod
-    def update_alumni_user(post_data):
-        pass
+    def update_alumni_user(put_data):
+        alumni = Alumni.query.filter_by(alumni_id=put_data.get('alumni_id')).first()
+        alumni.user_confirmed = put_data.get('user_confirmed')
+        db.session.add(alumni)
+        db.session.commit()
+        
+        return {
+            "data": None,
+            "status": 200,
+            "error": None
+        }
