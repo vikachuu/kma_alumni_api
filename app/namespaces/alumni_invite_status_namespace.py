@@ -19,7 +19,7 @@ class AlumniInviteStatus(Resource):
 
     @api_alumni_invite_status.doc(body=invite_status_fields)
     def post(self):
-        """Create new alumni status record.
+        """Create new alumni status record. **Status values**: `not invited`, `invited`, `no response`, `rejected`, `registered`.
         """
         from app.controllers.alumni_invite_status_controller import AlumniInviteStatusController
         post_data = request.get_json()
@@ -27,7 +27,7 @@ class AlumniInviteStatus(Resource):
 
     @api_alumni_invite_status.doc(body=invite_status_fields)
     def put(self):
-        """Update alumni status record.
+        """Update alumni status record. **Status values**: `not invited`, `invited`, `no response`, `rejected`, `registered`.
         """
         from app.controllers.alumni_invite_status_controller import AlumniInviteStatusController
         put_data = request.get_json()

@@ -35,7 +35,7 @@ class AlumniController:
                             "odoo_contact_id": alumni.odoo_contact_id,
                             "alumni_uuid": alumni.alumni_uuid,
                             "email": alumni.email,
-                            "password": alumni.password
+                            "password": alumni.password,
                             "confirmed": alumni.user_confirmed,
                         }},
                     "status": 201,
@@ -52,7 +52,7 @@ class AlumniController:
                             "confirmed": alumni.user_confirmed,
                         }},
                     "status": 200,
-                    "error": f"Alumni {alumni.email} already exists."
+                    "error": f"Alumni already exists."
                     }
 
     @staticmethod

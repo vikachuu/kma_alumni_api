@@ -5,6 +5,8 @@ from flask import request
 from flask_restplus import Namespace, Resource, fields
 from cryptography.fernet import Fernet
 
+from app.utils.email_sender import send_confirmation_email
+
 
 api_register = Namespace("register", description="Request to sign up new alumni.")
 
@@ -63,5 +65,19 @@ class Register(Resource):
         post_data.update({'odoo_contact_id': odoo_contact_id})
         response = AlumniController.create_alumni_user(post_data)
 
-        # send email for confirmation
+        
+        if response.get("status") == 201:
+            # update record in alumni invite status to registered
+            from app.controllers.alumni_invite_status_controller import AlumniInviteStatusController
+            put_data = {
+                "odoo_contact_id": odoo_contact_id,
+                "invite_status": "registered"
+            }
+            AlumniInviteStatusController.update_invite_status_record(put_data)
+
+            # send email for confirmation
+            receiver_email = response['data']['alumni']['email']
+            alumni_uuid = response['data']['alumni']['alumni_uuid']
+            send_confirmation_email(receiver_email, alumni_uuid)
+
         return response
