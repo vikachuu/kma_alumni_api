@@ -5,11 +5,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_heroku import Heroku
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
 
 from xmlrpc import client
 
 from app.api import blueprint as api
-
 
 web_app = Flask("Alumni sevice")
 web_app.config.from_object('config')
@@ -20,6 +20,7 @@ db = SQLAlchemy(web_app)
 heroku = Heroku(web_app)
 cors = CORS(web_app, resources={r"/api/*": {"origins": "*"}})
 flask_bcrypt = Bcrypt(web_app)
+jwt = JWTManager(web_app)
 
 # initialize Odoo
 odoo_url = os.getenv('ODOO_URL')

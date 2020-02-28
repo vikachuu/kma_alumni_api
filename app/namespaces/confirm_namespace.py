@@ -1,5 +1,6 @@
 from flask import request
 from flask_restplus import Namespace, Resource, fields
+from flask_jwt_extended import create_access_token, create_refresh_token
 
 
 api_confim = Namespace("confirm", description="Request to confirm new alumni creation.")
@@ -56,7 +57,9 @@ class Confirm(Resource):
             })
             return {
                 "data": {
-                    "alumni": contact
+                    "alumni": contact,
+                    "access_token": create_access_token(identity=alumni.email),
+                    "refresh_token": create_refresh_token(identity=alumni.email)
                 },
                 "status": 200,
                 "error": None

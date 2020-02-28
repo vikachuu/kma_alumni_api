@@ -10,6 +10,11 @@ class AlumniController:
         return alumni
 
     @staticmethod
+    def get_all_registered_alumni_odoo_ids():
+        ids = db.session.query(Alumni.odoo_contact_id).filter_by(user_confirmed=True).all()
+        return [x for x, in ids]
+
+    @staticmethod
     def create_alumni_user(post_data):
         # check if user already exists
         alumni = Alumni.query.filter_by(odoo_contact_id=post_data.get('odoo_contact_id')).first()
