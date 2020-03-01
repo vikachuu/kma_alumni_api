@@ -76,3 +76,22 @@ class AlumniInviteStatusController:
                     "status": 201,
                     "error": None
                 }
+
+    @staticmethod
+    def delete_invite_status_record(odoo_contact_id):
+        record = AlumniInviteStatus.query.filter_by(odoo_contact_id=odoo_contact_id).first()
+        if record is not None:
+            db.session.delete(record)
+            db.session.commit()
+
+            return {
+                "data": None,
+                "status": 204,
+                "error": None
+            }
+        else:
+            return {
+                "data": None,
+                "status": 404,
+                "error": "No record with such id to delete."
+            }

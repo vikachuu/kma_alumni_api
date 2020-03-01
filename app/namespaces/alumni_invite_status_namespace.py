@@ -14,6 +14,8 @@ invite_status_fields = api_alumni_invite_status.model('Alumni invite status payl
 class AlumniInviteStatus(Resource):
 
     def get(self):
+        """Returns id-status dict.
+        """
         from app.controllers.alumni_invite_status_controller import AlumniInviteStatusController
         return AlumniInviteStatusController.get_id_status_records_dict()
 
@@ -32,3 +34,13 @@ class AlumniInviteStatus(Resource):
         from app.controllers.alumni_invite_status_controller import AlumniInviteStatusController
         put_data = request.get_json()
         return AlumniInviteStatusController.update_invite_status_record(put_data)
+
+
+@api_alumni_invite_status.route("/<odoo_contact_id>")
+class AlumniInviteStatusId(Resource):
+
+    def delete(self, odoo_contact_id):
+        """Delete record of alumni invite status (when user registers).
+        """
+        from app.controllers.alumni_invite_status_controller import AlumniInviteStatusController
+        return AlumniInviteStatusController.delete_invite_status_record(odoo_contact_id)

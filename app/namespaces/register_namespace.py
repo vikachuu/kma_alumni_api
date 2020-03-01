@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from dateutil import parser
 
 from flask import request
 from flask_restplus import Namespace, Resource, fields
@@ -22,7 +23,7 @@ def decode_token(token):
     f = Fernet(key.encode('utf-8'))
     token = f.decrypt(token.encode('utf-8'))
     contact_id, expiration_date = token.decode('utf-8').split(" ", 1)
-    return contact_id, datetime.fromisoformat(expiration_date)
+    return contact_id, parser.parse(expiration_date)
 
 
 @api_register.route("/")
@@ -67,13 +68,9 @@ class Register(Resource):
 
         
         if response.get("status") == 201:
-            # update record in alumni invite status to registered
+            # delete record in alumni invite status
             from app.controllers.alumni_invite_status_controller import AlumniInviteStatusController
-            put_data = {
-                "odoo_contact_id": odoo_contact_id,
-                "invite_status": "registered"
-            }
-            AlumniInviteStatusController.update_invite_status_record(put_data)
+            AlumniInviteStatusController.delete_invite_status_record(odoo_contact_id)
 
             # send email for confirmation
             receiver_email = response['data']['alumni']['email']
