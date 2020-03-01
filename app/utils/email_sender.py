@@ -8,7 +8,7 @@ def send_confirmation_email(receiver_email, alumni_uuid):
     sender_email = os.getenv('SENDER_EMAIL')
     password = os.getenv('EMAIL_ACCOUNT_PASSWORD')
 
-    confirmation_link = f"https://alumni-frontend.herokuapp.com/signup/{alumni_uuid}/"
+    confirmation_link = f"https://alumni-frontend.herokuapp.com/confirm/{alumni_uuid}/"
 
     message = f"""Subject: NaUKMA Alumni service
 
