@@ -49,7 +49,7 @@ class Login(Resource):
                     'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
                     'image_1920'],})
 
-        if contact in None:
+        if contact is None:
             return {
                 "data": None,
                 "status": 404,
