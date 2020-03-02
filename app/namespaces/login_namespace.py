@@ -49,6 +49,13 @@ class Login(Resource):
                     'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
                     'image_1920'],})
 
+        if contact in None:
+            return {
+                "data": None,
+                "status": 404,
+                "error": "No proper odoo contact for this alumni was found."
+            }
+
         # return alumni data
         contact[0].update({
             "alumni_uuid": alumni.alumni_uuid,
