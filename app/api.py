@@ -11,6 +11,7 @@ from app.namespaces.link_namespace import api_register_link
 from app.namespaces.register_namespace import api_register
 from app.namespaces.alumni_invite_status_namespace import api_alumni_invite_status
 from app.namespaces.confirm_namespace import api_confim
+from app.namespaces.login_namespace import api_login
 
 api.add_namespace(api_health)
 api.add_namespace(api_alumni)
@@ -18,3 +19,4 @@ api.add_namespace(api_register_link)
 api.add_namespace(api_register)
 api.add_namespace(api_alumni_invite_status)
 api.add_namespace(api_confim)
+api.add_namespace(api_login)

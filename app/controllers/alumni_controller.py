@@ -15,6 +15,11 @@ class AlumniController:
         return [x for x, in ids]
 
     @staticmethod
+    def get_alumni_user_by_email(email):
+        alumni = Alumni.query.filter_by(email=email).first()
+        return alumni
+
+    @staticmethod
     def create_alumni_user(post_data):
         # check if user already exists
         alumni = Alumni.query.filter_by(odoo_contact_id=post_data.get('odoo_contact_id')).first()
