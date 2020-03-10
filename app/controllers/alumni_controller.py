@@ -10,6 +10,11 @@ class AlumniController:
         return alumni
 
     @staticmethod
+    def get_alumni_by_odoo_id(odoo_contact_id):
+        alumni = Alumni.query.filter_by(odoo_contact_id=odoo_contact_id).first()
+        return alumni
+
+    @staticmethod
     def get_all_registered_alumni_odoo_ids():
         ids = db.session.query(Alumni.odoo_contact_id).all()
         return [int(x) for x, in ids]

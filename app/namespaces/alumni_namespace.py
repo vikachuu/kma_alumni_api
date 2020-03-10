@@ -130,12 +130,32 @@ class AlumniId(Resource):
         filter_list.append(['id', '=', int(odoo_contact_id)])
 
         from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
-        contact = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
+        contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
                 [filter_list],
                 {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link',
                 'bachelor_degree', 'bachelor_faculty', 'bachelor_speciality', 'bachelor_year_in', 'bachelor_year_out',
                 'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
                 'image_1920'],})
+
+        if not len(contacts):
+            return {
+                "data": None,
+                "status": 404,
+                "error": "No odoo contact with such id exists."
+                }
+
+        contact = contacts[0]
+
+        # get alumni user
+        from app.controllers.alumni_controller import AlumniController
+        alumni = AlumniController.get_alumni_by_odoo_id(str(contact.get('id')))
+
+        if alumni is not None:
+            contact.update({
+                    "alumni_uuid": alumni.alumni_uuid,
+                    "password": alumni.password,
+                    "user_confirmed": alumni.user_confirmed,
+                })
 
         return {
                 "data": {

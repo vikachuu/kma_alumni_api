@@ -42,15 +42,17 @@ class Confirm(Resource):
 
             # get alumni odoo contact
             from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
-            contact = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
+            contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
                     [[['id', '=', int(alumni.odoo_contact_id)],]],
                     {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link',
                     'bachelor_degree', 'bachelor_faculty', 'bachelor_speciality', 'bachelor_year_in', 'bachelor_year_out',
                     'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
                     'image_1920'],})
 
+            contact = contacts[0]
+
             # return alumni data
-            contact[0].update({
+            contact.update({
                 "alumni_uuid": alumni.alumni_uuid,
                 "password": alumni.password,
                 "user_confirmed": alumni.user_confirmed,
