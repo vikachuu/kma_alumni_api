@@ -16,7 +16,19 @@ class AlumniRegistered(Resource):
 
     @api_alumni.doc(params={
                     'offset': 'Offset value for pagination. Default: 0.',
-                    'limit': 'Limit value for pagination. Default: 0.',})
+                    'limit': 'Limit value for pagination. Default: 0.',
+                    
+                    'bachelor_faculty': 'Bachelor faculty value.',
+                    'bachelor_speciality': 'Bachelor speciality value.',
+                    'bachelor_entry_year': 'Bachelor entry year value.',
+                    'bachelor_finish_year': 'Bachelor finish year value.',
+
+                    'master_faculty': 'Master faculty value.',
+                    'master_speciality': 'Master speciality value.',
+                    'master_entry_year': 'Master entry year value.',
+                    'master_finish_year': 'Master finish year value.',
+                    
+                    'user_confirmed': 'Alumni confirmed status values: `True`, `False`.'})
     def get(self):
         """Return all registered alumni.
         """
@@ -24,12 +36,37 @@ class AlumniRegistered(Resource):
         offset = query_params.get('offset', 0)
         limit = query_params.get('limit', 0)
 
+        bachelor_faculty = query_params.get('bachelor_faculty')
+        bachelor_speciality = query_params.get('bachelor_speciality')
+        bachelor_entry_year = query_params.get('bachelor_entry_year')
+        bachelor_finish_year = query_params.get('bachelor_finish_year')
+
+        master_faculty = query_params.get('master_faculty')
+        master_speciality = query_params.get('master_speciality')
+        master_entry_year = query_params.get('master_entry_year')
+        master_finish_year = query_params.get('master_finish_year')
+
+        user_confirmed = query_params.get('user_confirmed')
+
         from app.controllers.alumni_controller import AlumniController
         registered_alumni_odoo_ids = AlumniController.get_all_registered_alumni_odoo_ids()
 
+        filter_list = []
+        filter_list.append(['id', 'in', registered_alumni_odoo_ids])
+
+        filter_list.append(['bachelor_faculty', '=', bachelor_faculty]) if bachelor_entry_year else None
+        filter_list.append(['bachelor_speciality', '=', bachelor_speciality]) if bachelor_speciality else None
+        filter_list.append(['bachelor_year_in', '=', bachelor_entry_year]) if bachelor_entry_year else None
+        filter_list.append(['bachelor_year_out', '=', bachelor_finish_year]) if bachelor_finish_year else None
+
+        filter_list.append(['master_faculty', '=', master_faculty]) if master_faculty else None
+        filter_list.append(['master_speciality', '=', master_speciality]) if master_speciality else None
+        filter_list.append(['master_year_in', '=', master_entry_year]) if master_entry_year else None
+        filter_list.append(['master_year_out', '=', master_finish_year]) if master_finish_year else None
+
         from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
         contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
-                [[['id', 'in', registered_alumni_odoo_ids]]],
+                [filter_list],
                 {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link',
                 'bachelor_degree', 'bachelor_faculty', 'bachelor_speciality', 'bachelor_year_in', 'bachelor_year_out',
                 'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
@@ -37,8 +74,18 @@ class AlumniRegistered(Resource):
                 'offset': int(offset),
                 'limit': int(limit)})
 
-        # get all registered alumni odoo ids with statuses
-        # map contacts with statuses
+        # map contact
+        for x in contacts:
+            alumni = AlumniController.get_alumni_by_odoo_id(str(x['id']))
+            x.update({
+                "alumni_uuid": alumni.alumni_uuid,
+                "user_confirmed": alumni.user_confirmed,
+            })
+
+        # filter contact by user confirmed status of exists
+        if user_confirmed is not None:
+            contacts = [x for x in contacts if x['user_confirmed']]
+
 
         return {
                 "data": contacts,
@@ -52,7 +99,19 @@ class AlumniUnregistered(Resource):
 
     @api_alumni.doc(params={
                     'offset': 'Offset value for pagination. Default: 0.',
-                    'limit': 'Limit value for pagination. Default: 0.',})
+                    'limit': 'Limit value for pagination. Default: 0.',
+
+                    'bachelor_faculty': 'Bachelor faculty value.',
+                    'bachelor_speciality': 'Bachelor speciality value.',
+                    'bachelor_entry_year': 'Bachelor entry year value.',
+                    'bachelor_finish_year': 'Bachelor finish year value.',
+
+                    'master_faculty': 'Master faculty value.',
+                    'master_speciality': 'Master speciality value.',
+                    'master_entry_year': 'Master entry year value.',
+                    'master_finish_year': 'Master finish year value.',
+                    
+                    'invite_status': 'Invite status values: `not invited`, `invited`, `no response`, `rejected`.'})
     def get(self):
         """Return all unregistered alumni.
         """
@@ -61,12 +120,23 @@ class AlumniUnregistered(Resource):
         offset = query_params.get('offset', 0)
         limit = query_params.get('limit', 0)
 
+        bachelor_faculty = query_params.get('bachelor_faculty')
+        bachelor_speciality = query_params.get('bachelor_speciality')
+        bachelor_entry_year = query_params.get('bachelor_entry_year')
+        bachelor_finish_year = query_params.get('bachelor_finish_year')
+
+        master_faculty = query_params.get('master_faculty')
+        master_speciality = query_params.get('master_speciality')
+        master_entry_year = query_params.get('master_entry_year')
+        master_finish_year = query_params.get('master_finish_year')
+
+        invite_status = query_params.get('invite_status')
+
         filter_list = []
         filter_list.append(['is_company', '=', False])
         filter_list.append(['is_alumni', '=', True])
 
         from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
-
         # get all odoo alumni ids
         all_alumni_ids = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner',
                         'search',[filter_list])
@@ -78,8 +148,20 @@ class AlumniUnregistered(Resource):
         # not registered and not invited alumni ids together
         not_registered_alumni_odoo_ids = [x for x in all_alumni_ids if x not in registered_alumni_odoo_ids]
 
+        filter_list.append(['id', 'in', not_registered_alumni_odoo_ids])
+        filter_list.append(['bachelor_faculty', '=', bachelor_faculty]) if bachelor_entry_year else None
+        filter_list.append(['bachelor_speciality', '=', bachelor_speciality]) if bachelor_speciality else None
+        filter_list.append(['bachelor_year_in', '=', bachelor_entry_year]) if bachelor_entry_year else None
+        filter_list.append(['bachelor_year_out', '=', bachelor_finish_year]) if bachelor_finish_year else None
+
+        filter_list.append(['master_faculty', '=', master_faculty]) if master_faculty else None
+        filter_list.append(['master_speciality', '=', master_speciality]) if master_speciality else None
+        filter_list.append(['master_year_in', '=', master_entry_year]) if master_entry_year else None
+        filter_list.append(['master_year_out', '=', master_finish_year]) if master_finish_year else None
+
+
         contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
-                [[['id', 'in', not_registered_alumni_odoo_ids]]],
+                [filter_list],
                 {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link', 'is_alumni',
                 'bachelor_degree', 'bachelor_faculty', 'bachelor_speciality', 'bachelor_year_in', 'bachelor_year_out',
                 'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
@@ -97,6 +179,10 @@ class AlumniUnregistered(Resource):
             x.update({
                 "alumni_status": status if status else "not invited"
             })
+
+        # filter by status query param if exists
+        if invite_status is not None:
+            contacts = [x for x in contacts if x['alumni_status'] == invite_status]
 
         return {
                 "data": contacts,

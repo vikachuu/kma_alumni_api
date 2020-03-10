@@ -15,13 +15,18 @@ class AlumniController:
         return alumni
 
     @staticmethod
+    def get_alumni_user_by_email(email):
+        alumni = Alumni.query.filter_by(email=email).first()
+        return alumni
+
+    @staticmethod
     def get_all_registered_alumni_odoo_ids():
         ids = db.session.query(Alumni.odoo_contact_id).all()
         return [int(x) for x, in ids]
 
     @staticmethod
-    def get_alumni_user_by_email(email):
-        alumni = Alumni.query.filter_by(email=email).first()
+    def get_all_alumni():
+        alumni = Alumni.query.all()
         return alumni
 
     @staticmethod
