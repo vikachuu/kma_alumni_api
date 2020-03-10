@@ -52,8 +52,7 @@ class AlumniUnregistered(Resource):
 
     @api_alumni.doc(params={
                     'offset': 'Offset value for pagination. Default: 0.',
-                    'limit': 'Limit value for pagination. Default: 0.',
-                    'tag': 'Filter by tag from Odoo contact. For example - \'Alumni\'',})
+                    'limit': 'Limit value for pagination. Default: 0.',})
     def get(self):
         """Return all unregistered alumni.
         """
@@ -61,11 +60,10 @@ class AlumniUnregistered(Resource):
         query_params = request.args
         offset = query_params.get('offset', 0)
         limit = query_params.get('limit', 0)
-        tag = query_params.get('tag')
 
         filter_list = []
         filter_list.append(['is_company', '=', False])
-        filter_list.append(['category_id', '=', tag]) if tag else None
+        filter_list.append(['is_alumni', '=', True])
 
         from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
 
@@ -82,7 +80,7 @@ class AlumniUnregistered(Resource):
 
         contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
                 [[['id', 'in', not_registered_alumni_odoo_ids]]],
-                {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link',
+                {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link', 'is_alumni',
                 'bachelor_degree', 'bachelor_faculty', 'bachelor_speciality', 'bachelor_year_in', 'bachelor_year_out',
                 'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
                 'image_1920'],
