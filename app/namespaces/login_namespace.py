@@ -59,7 +59,6 @@ class Login(Resource):
         # return alumni data
         contact[0].update({
             "alumni_uuid": alumni.alumni_uuid,
-            "password": alumni.password,
             "user_confirmed": alumni.user_confirmed,
         })
 

@@ -45,7 +45,6 @@ class OperatorLogin(Resource):
                         "operator_id": operator.operator_id,
                         "username": operator.username,
                         "email": operator.email,
-                        "password": operator.password,
                         "is_admin": operator.is_admin,
                     },
                 "access_token": create_access_token(identity=operator.email),

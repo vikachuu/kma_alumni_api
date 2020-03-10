@@ -153,7 +153,6 @@ class AlumniId(Resource):
         if alumni is not None:
             contact.update({
                     "alumni_uuid": alumni.alumni_uuid,
-                    "password": alumni.password,
                     "user_confirmed": alumni.user_confirmed,
                 })
 
