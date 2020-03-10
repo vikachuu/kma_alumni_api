@@ -2,7 +2,7 @@ from flask import request
 from flask_restplus import Namespace, Resource, fields
 
 
-api_alumni = Namespace('alumni', description='Requests to alumni model')
+api_alumni = Namespace('alumni', description='Requests to alumni model.')
 
 resource_fields = api_alumni.model('Create alumni user payload', {
     "odoo_contact_id": fields.String,
