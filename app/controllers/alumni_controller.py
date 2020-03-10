@@ -11,8 +11,8 @@ class AlumniController:
 
     @staticmethod
     def get_all_registered_alumni_odoo_ids():
-        ids = db.session.query(Alumni.odoo_contact_id).filter_by(user_confirmed=True).all()
-        return [x for x, in ids]
+        ids = db.session.query(Alumni.odoo_contact_id).all()
+        return [int(x) for x, in ids]
 
     @staticmethod
     def get_alumni_user_by_email(email):
