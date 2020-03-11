@@ -323,3 +323,89 @@ class AlumniId(Resource):
                 "status": 200,
                 "error": None
                 }
+
+
+@api_alumni.route("/<odoo_contact_id>/groupmates")
+class AlumniGroupmates(Resource):
+
+    @api_alumni.doc(params={
+                    'odoo_contact_id': 'Odoo contact id.',
+                    'offset': 'Offset value for pagination. Default: 0.',
+                    'limit': 'Limit value for pagination. Default: 0.',})
+    def get(self, odoo_contact_id):
+        """Get Bachelor and Master groupmates for alumni with given alumni id.
+        """
+        query_params = request.args
+        offset = query_params.get('offset', 0)
+        limit = query_params.get('limit', 0)
+
+        # get odoo contact by id
+        filter_list = []
+        filter_list.append(['id', '=', int(odoo_contact_id)])
+
+        from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
+        contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
+                [filter_list],
+                {'fields': ['bachelor_speciality', 'bachelor_year_in', 'master_speciality', 'master_year_in',],})
+
+        if not len(contacts):
+            return {
+                "data": None,
+                "status": 404,
+                "error": "No odoo contact with such an id exists."
+                }
+
+        contact = contacts[0]
+
+        # append filters for groupmates
+        bachelor_speciality = contact.get('bachelor_speciality')
+        bachelor_year_in = contact.get('bachelor_year_in')
+        master_speciality = contact.get('master_speciality')
+        master_year_in = contact.get('master_year_in')
+
+        if bachelor_speciality and bachelor_year_in and master_speciality and master_year_in:
+            groupmates_filter_list = ['&', ('id', '!=', odoo_contact_id),
+                                      '|', '&', ('bachelor_speciality', '=', bachelor_speciality), ('bachelor_year_in', '=', bachelor_year_in),
+                                            '&', ('master_speciality', '=', master_speciality), ('master_year_in', '=', master_year_in)]
+
+        elif bachelor_speciality and bachelor_year_in:
+            groupmates_filter_list = ['&', ('id', '!=', odoo_contact_id),
+                                      '&', ('bachelor_speciality', '=', bachelor_speciality), ('bachelor_year_in', '=', bachelor_year_in)]
+
+        elif master_speciality and master_year_in:
+            groupmates_filter_list = ['&', ('id', '!=', odoo_contact_id),
+                                      '&', ('master_speciality', '=', master_speciality), ('master_year_in', '=', master_year_in)]
+
+        else:
+            return {
+                "data": None,
+                "status": 400,
+                "error": "Not enough query params."
+            } 
+
+        # get all groupmates (both bachelor and masters)
+        contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
+                [groupmates_filter_list],
+                {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link', 'is_alumni',
+                'bachelor_degree', 'bachelor_faculty', 'bachelor_speciality', 'bachelor_year_in', 'bachelor_year_out',
+                'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
+                'image_1920'],
+                'offset': int(offset),
+                'limit': int(limit)})
+
+         # get all registered alumni id
+        from app.controllers.alumni_controller import AlumniController
+        registered_alumni_odoo_ids_allow_show_contacts = AlumniController.get_alumni_odoo_id_allow_show_contacts_dict()
+
+        # map contacts with statuses (registered/unregistered) and allow_show_contacts field
+        for x in contacts:
+            x.update({
+                "alumni_status": "registered" if str(x['id']) in registered_alumni_odoo_ids_allow_show_contacts else "unregistered",
+                "allow_show_contacts": registered_alumni_odoo_ids_allow_show_contacts.get(str(x['id']), False)
+            })
+
+        return {
+                "data": contacts,
+                "status": 200,
+                "error": None
+            }
