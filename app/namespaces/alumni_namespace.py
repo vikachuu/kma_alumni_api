@@ -8,6 +8,7 @@ resource_fields = api_alumni.model('Create alumni user payload', {
     "odoo_contact_id": fields.String,
     "email": fields.String,
     "password": fields.String,
+    "allow_show_contacts": fields.Boolean,
 })
 
 
@@ -30,7 +31,7 @@ class AlumniRegistered(Resource):
                     
                     'user_confirmed': 'Alumni confirmed status values: `True`, `False`.'})
     def get(self):
-        """Return all registered alumni.
+        """Return all registered alumni (for operator side).
         """
         query_params = request.args
         offset = query_params.get('offset', 0)
@@ -80,6 +81,7 @@ class AlumniRegistered(Resource):
             x.update({
                 "alumni_uuid": alumni.alumni_uuid,
                 "user_confirmed": alumni.user_confirmed,
+                "allow_show_contacts": alumni.allow_show_contacts,
             })
 
         # filter contact by user confirmed status of exists
@@ -113,7 +115,7 @@ class AlumniUnregistered(Resource):
                     
                     'invite_status': 'Invite status values: `not invited`, `invited`, `no response`, `rejected`.'})
     def get(self):
-        """Return all unregistered alumni.
+        """Return all unregistered alumni (for operator side).
         """
 
         query_params = request.args
@@ -194,9 +196,80 @@ class AlumniUnregistered(Resource):
 @api_alumni.route("/")
 class Alumni(Resource):
 
+    @api_alumni.doc(params={
+                    'offset': 'Offset value for pagination. Default: 0.',
+                    'limit': 'Limit value for pagination. Default: 0.',
+
+                    'bachelor_faculty': 'Bachelor faculty value.',
+                    'bachelor_speciality': 'Bachelor speciality value.',
+                    'bachelor_entry_year': 'Bachelor entry year value.',
+                    'bachelor_finish_year': 'Bachelor finish year value.',
+
+                    'master_faculty': 'Master faculty value.',
+                    'master_speciality': 'Master speciality value.',
+                    'master_entry_year': 'Master entry year value.',
+                    'master_finish_year': 'Master finish year value.',})
+    def get(self):
+        """Get all alumni (for alumni side).
+        """
+        query_params = request.args
+        offset = query_params.get('offset', 0)
+        limit = query_params.get('limit', 0)
+
+        bachelor_faculty = query_params.get('bachelor_faculty')
+        bachelor_speciality = query_params.get('bachelor_speciality')
+        bachelor_entry_year = query_params.get('bachelor_entry_year')
+        bachelor_finish_year = query_params.get('bachelor_finish_year')
+
+        master_faculty = query_params.get('master_faculty')
+        master_speciality = query_params.get('master_speciality')
+        master_entry_year = query_params.get('master_entry_year')
+        master_finish_year = query_params.get('master_finish_year')
+
+        filter_list = []
+        filter_list.append(['is_alumni', '=', True])
+
+        filter_list.append(['bachelor_faculty', '=', bachelor_faculty]) if bachelor_entry_year else None
+        filter_list.append(['bachelor_speciality', '=', bachelor_speciality]) if bachelor_speciality else None
+        filter_list.append(['bachelor_year_in', '=', bachelor_entry_year]) if bachelor_entry_year else None
+        filter_list.append(['bachelor_year_out', '=', bachelor_finish_year]) if bachelor_finish_year else None
+
+        filter_list.append(['master_faculty', '=', master_faculty]) if master_faculty else None
+        filter_list.append(['master_speciality', '=', master_speciality]) if master_speciality else None
+        filter_list.append(['master_year_in', '=', master_entry_year]) if master_entry_year else None
+        filter_list.append(['master_year_out', '=', master_finish_year]) if master_finish_year else None
+
+        # get all alumni from odoo
+        from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
+        contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
+                [filter_list],
+                {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link', 'is_alumni',
+                'bachelor_degree', 'bachelor_faculty', 'bachelor_speciality', 'bachelor_year_in', 'bachelor_year_out',
+                'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
+                'image_1920'],
+                'offset': int(offset),
+                'limit': int(limit)})
+
+        # get all registered alumni id
+        from app.controllers.alumni_controller import AlumniController
+        registered_alumni_odoo_ids_allow_show_contacts = AlumniController.get_alumni_odoo_id_allow_show_contacts_dict()
+
+        # map contacts with statuses (registered/unregistered) and allow_show_contacts field
+        for x in contacts:
+            x.update({
+                "alumni_status": "registered" if str(x['id']) in registered_alumni_odoo_ids_allow_show_contacts else "unregistered",
+                "allow_show_contacts": registered_alumni_odoo_ids_allow_show_contacts.get(str(x['id']), False)
+            })
+
+        return {
+                "data": contacts,
+                "status": 200,
+                "error": None
+            }
+
     @api_alumni.doc(body=resource_fields)
     def post(self):
-        """Create alumni user
+        """Create alumni user.
         """
         from app.controllers.alumni_controller import AlumniController
         post_data = request.get_json()
@@ -240,6 +313,7 @@ class AlumniId(Resource):
             contact.update({
                     "alumni_uuid": alumni.alumni_uuid,
                     "user_confirmed": alumni.user_confirmed,
+                    "allow_show_contacts": alumni.allow_show_contacts,
                 })
 
         return {

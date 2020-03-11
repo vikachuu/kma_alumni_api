@@ -30,6 +30,11 @@ class AlumniController:
         return alumni
 
     @staticmethod
+    def get_alumni_odoo_id_allow_show_contacts_dict():
+        odoo_id_show_contact = db.session.query(Alumni.odoo_contact_id, Alumni.allow_show_contacts).all()
+        return dict(odoo_id_show_contact)
+
+    @staticmethod
     def create_alumni_user(post_data):
         # check if user already exists
         alumni = Alumni.query.filter_by(odoo_contact_id=post_data.get('odoo_contact_id')).first()
@@ -38,6 +43,7 @@ class AlumniController:
                 odoo_contact_id=post_data.get('odoo_contact_id'),
                 email=post_data.get('email'),
                 password=post_data.get('password'),
+                allow_show_contacts=post_data.get('allow_show_contacts')
             )
 
             # insert the user
@@ -52,6 +58,7 @@ class AlumniController:
                             "email": alumni.email,
                             "password": alumni.password,
                             "user_confirmed": alumni.user_confirmed,
+                            "allow_show_contacts": alumni.allow_show_contacts,
                         }},
                     "status": 201,
                     "error": None
@@ -65,6 +72,7 @@ class AlumniController:
                             "email": alumni.email,
                             "password": alumni.password,
                             "user_confirmed": alumni.user_confirmed,
+                            "allow_show_contacts": alumni.allow_show_contacts,
                         }},
                     "status": 200,
                     "error": f"Alumni already exists."
