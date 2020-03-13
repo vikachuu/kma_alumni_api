@@ -151,7 +151,7 @@ class AlumniUnregistered(Resource):
         not_registered_alumni_odoo_ids = [x for x in all_alumni_ids if x not in registered_alumni_odoo_ids]
 
         filter_list.append(['id', 'in', not_registered_alumni_odoo_ids])
-        filter_list.append(['bachelor_faculty', '=', bachelor_faculty]) if bachelor_entry_year else None
+        filter_list.append(['bachelor_faculty', '=', bachelor_faculty]) if bachelor_faculty else None
         filter_list.append(['bachelor_speciality', '=', bachelor_speciality]) if bachelor_speciality else None
         filter_list.append(['bachelor_year_in', '=', bachelor_entry_year]) if bachelor_entry_year else None
         filter_list.append(['bachelor_year_out', '=', bachelor_finish_year]) if bachelor_finish_year else None
