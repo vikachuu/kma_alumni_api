@@ -47,11 +47,11 @@ class Register(Resource):
                     "error": "Registration link is expired."
                     }
 
-        # check if such odoo user exists 
-        # TODO: move to a separate controller
-        from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
-        contacts_number = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_count',
-                [[['id', '=', odoo_contact_id], ]])
+        # check if such odoo user exists
+        filter_list = []
+        filter_list.append(['id', '=', odoo_contact_id])
+        from app.controllers.odoo_controller import OdooController
+        contacts_number = OdooController.count_number_of_odoo_contacts_by_filter_list(filter_list)
 
         if contacts_number == 0:
             return {"data": {

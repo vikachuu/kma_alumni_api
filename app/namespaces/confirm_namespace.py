@@ -41,13 +41,11 @@ class Confirm(Resource):
             AlumniController.update_alumni_user(put_data)
 
             # get alumni odoo contact
-            from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
-            contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
-                    [[['id', '=', int(alumni.odoo_contact_id)],]],
-                    {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link',
-                    'bachelor_degree', 'bachelor_faculty', 'bachelor_speciality', 'bachelor_year_in', 'bachelor_year_out',
-                    'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
-                    'image_1920'],})
+            filter_list = []
+            filter_list.append(['id', '=', int(alumni.odoo_contact_id)])
+
+            from app.controllers.odoo_controller import OdooController
+            contacts = OdooController.get_odoo_contacts_by_filter_list(filter_list, 0, 0)
 
             contact = contacts[0]
 

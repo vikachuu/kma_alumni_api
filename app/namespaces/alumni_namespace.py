@@ -65,15 +65,8 @@ class AlumniRegistered(Resource):
         filter_list.append(['master_year_in', '=', master_entry_year]) if master_entry_year else None
         filter_list.append(['master_year_out', '=', master_finish_year]) if master_finish_year else None
 
-        from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
-        contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
-                [filter_list],
-                {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link',
-                'bachelor_degree', 'bachelor_faculty', 'bachelor_speciality', 'bachelor_year_in', 'bachelor_year_out',
-                'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
-                'image_1920'],
-                'offset': int(offset),
-                'limit': int(limit)})
+        from app.controllers.odoo_controller import OdooController
+        contacts = OdooController.get_odoo_contacts_by_filter_list(filter_list, offset, limit)
 
         # map contact
         for x in contacts:
@@ -138,10 +131,9 @@ class AlumniUnregistered(Resource):
         filter_list.append(['is_company', '=', False])
         filter_list.append(['is_alumni', '=', True])
 
-        from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
         # get all odoo alumni ids
-        all_alumni_ids = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner',
-                        'search',[filter_list])
+        from app.controllers.odoo_controller import OdooController
+        all_alumni_ids = OdooController.get_odoo_contacts_ids_by_filter_list(filter_list)
 
         # get all registered alumni ids
         from app.controllers.alumni_controller import AlumniController
@@ -161,15 +153,8 @@ class AlumniUnregistered(Resource):
         filter_list.append(['master_year_in', '=', master_entry_year]) if master_entry_year else None
         filter_list.append(['master_year_out', '=', master_finish_year]) if master_finish_year else None
 
-
-        contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
-                [filter_list],
-                {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link', 'is_alumni',
-                'bachelor_degree', 'bachelor_faculty', 'bachelor_speciality', 'bachelor_year_in', 'bachelor_year_out',
-                'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
-                'image_1920'],
-                'offset': int(offset),
-                'limit': int(limit)})
+        # get contacts from odoo
+        contacts = OdooController.get_odoo_contacts_by_filter_list(filter_list, offset, limit)
 
         # get all NOT registered alumni ids with statuses (invited, no response, rejected etc.)
         from app.controllers.alumni_invite_status_controller import AlumniInviteStatusController
@@ -240,15 +225,8 @@ class Alumni(Resource):
         filter_list.append(['master_year_out', '=', master_finish_year]) if master_finish_year else None
 
         # get all alumni from odoo
-        from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
-        contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
-                [filter_list],
-                {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link', 'is_alumni',
-                'bachelor_degree', 'bachelor_faculty', 'bachelor_speciality', 'bachelor_year_in', 'bachelor_year_out',
-                'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
-                'image_1920'],
-                'offset': int(offset),
-                'limit': int(limit)})
+        from app.controllers.odoo_controller import OdooController
+        contacts = OdooController.get_odoo_contacts_by_filter_list(filter_list, offset, limit)
 
         # get all registered alumni id
         from app.controllers.alumni_controller import AlumniController
@@ -288,13 +266,8 @@ class AlumniId(Resource):
         filter_list = []
         filter_list.append(['id', '=', int(odoo_contact_id)])
 
-        from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
-        contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
-                [filter_list],
-                {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link',
-                'bachelor_degree', 'bachelor_faculty', 'bachelor_speciality', 'bachelor_year_in', 'bachelor_year_out',
-                'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
-                'image_1920'],})
+        from app.controllers.odoo_controller import OdooController
+        contacts = OdooController.get_odoo_contacts_by_filter_list(filter_list, 0, 0)
 
         if not len(contacts):
             return {
@@ -343,10 +316,8 @@ class AlumniGroupmates(Resource):
         filter_list = []
         filter_list.append(['id', '=', int(odoo_contact_id)])
 
-        from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
-        contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
-                [filter_list],
-                {'fields': ['bachelor_speciality', 'bachelor_year_in', 'master_speciality', 'master_year_in',],})
+        from app.controllers.odoo_controller import OdooController
+        contacts = OdooController.get_odoo_contact_with_groupmates_fields(filter_list)
 
         if not len(contacts):
             return {
@@ -384,14 +355,7 @@ class AlumniGroupmates(Resource):
             } 
 
         # get all groupmates (both bachelor and masters)
-        contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
-                [groupmates_filter_list],
-                {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link', 'is_alumni',
-                'bachelor_degree', 'bachelor_faculty', 'bachelor_speciality', 'bachelor_year_in', 'bachelor_year_out',
-                'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
-                'image_1920'],
-                'offset': int(offset),
-                'limit': int(limit)})
+        contacts = OdooController.get_odoo_contacts_by_filter_list(groupmates_filter_list, offset, limit)
 
          # get all registered alumni id
         from app.controllers.alumni_controller import AlumniController

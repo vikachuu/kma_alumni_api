@@ -25,9 +25,10 @@ class RegisterLink(Resource):
         """Return generated unique link for alumni to register. Link will be expired in 1 week.
         """
         # check if such odoo user exists
-        from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
-        contacts_number = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_count',
-                [[['id', '=', odoo_contact_id], ]])
+        filter_list = []
+        filter_list.append(['id', '=', odoo_contact_id])
+        from app.controllers.odoo_controller import OdooController
+        contacts_number = OdooController.count_number_of_odoo_contacts_by_filter_list(filter_list)
 
         if contacts_number == 0:
             return {"data": {
