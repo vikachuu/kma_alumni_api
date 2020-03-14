@@ -10,6 +10,8 @@ class Operator(db.Model):
     password = db.Column(db.String(100), nullable=False)
     is_admin = db.Column(db.Boolean)
 
+    update_form = db.relationship("UpdateForm", back_populates="operator")
+
     def __init__(self, username, email, password, is_admin):
         self.username = username
         self.email = email

@@ -14,6 +14,7 @@ from app.namespaces.alumni_invite_status_namespace import api_alumni_invite_stat
 from app.namespaces.confirm_namespace import api_confim
 from app.namespaces.login_namespace import api_login
 from app.namespaces.operator_login_namespace import api_operator_login
+from app.namespaces.update_form_namespace import api_update_form
 
 
 api.add_namespace(api_health)
@@ -25,3 +26,4 @@ api.add_namespace(api_alumni_invite_status)
 api.add_namespace(api_confim)
 api.add_namespace(api_login)
 api.add_namespace(api_operator_login)
+api.add_namespace(api_update_form)

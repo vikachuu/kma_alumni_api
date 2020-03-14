@@ -13,6 +13,8 @@ class Alumni(db.Model):
     user_confirmed = db.Column(db.Boolean())
     allow_show_contacts = db.Column(db.Boolean())
 
+    update_form = db.relationship("UpdateForm", back_populates="alumni")
+
     def __init__(self, odoo_contact_id, email, password, allow_show_contacts):
         self.alumni_uuid = str(uuid.uuid4())
         self.odoo_contact_id = odoo_contact_id
