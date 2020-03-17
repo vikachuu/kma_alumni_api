@@ -65,3 +65,16 @@ class OdooController:
         except xmlrpc.cl1ient.ProtocolError as err:
             raise OdooIsDeadError(err)
         return contacts_number
+
+    @staticmethod
+    def get_odoo_companies():
+        try:
+            from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
+            companies = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
+                    [[['is_company', '=', True]]],
+                    {'fields': ['name'],})
+        except ConnectionRefusedError as err:
+            raise OdooIsDeadError(err)
+        except xmlrpc.cl1ient.ProtocolError as err:
+            raise OdooIsDeadError(err)
+        return companies
