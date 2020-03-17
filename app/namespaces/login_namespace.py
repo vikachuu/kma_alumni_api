@@ -28,17 +28,15 @@ class Login(Resource):
 
         if alumni is None:
             return {
-                "data": None,
-                "status": 401,
-                "error": "No alumni user with such an email exists."
-            }
+                "error": "Wrong email.",
+                "message": "Unauthorized: wrong email."
+                }, 401
 
         if not alumni.check_password(password):
             return {
-                "data": None,
-                "status": 401,
-                "error": "Wrong password."
-            }
+                "error": "Wrong password.",
+                "message": "Unauthorized: wrong password."
+                }, 401
         
         # if user exists get data from odoo contact and create access token for the user
         filter_list = []
@@ -49,10 +47,9 @@ class Login(Resource):
 
         if not contact:
             return {
-                "data": None,
-                "status": 404,
-                "error": "No proper odoo contact for this alumni was found."
-            }
+                "error": "Odoo contact not found.",
+                "message": "Odoo contact not found."
+                }, 404
 
         # return alumni data
         contact[0].update({
@@ -61,11 +58,7 @@ class Login(Resource):
         })
 
         return {
-            "data": {
-                "alumni": contact,
-                "access_token": create_access_token(identity=alumni.email),
-                "refresh_token": create_refresh_token(identity=alumni.email)
-            },
-            "status": 200,
-            "error": None
-        }
+            "alumni": contact,
+            "access_token": create_access_token(identity=alumni.email),
+            "refresh_token": create_refresh_token(identity=alumni.email)
+            }, 200

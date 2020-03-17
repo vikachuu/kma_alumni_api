@@ -20,49 +20,34 @@ class OperatorController:
             db.session.add(operator)
             db.session.commit()
 
-            return {"data": {
-                        "operator": {
-                            "operator_id": operator.operator_id,
-                            "username": operator.username,
-                            "email": operator.email,
-                            "is_admin": operator.is_admin,
-                        }},
-                    "status": 201,
-                    "error": None
-                    }
+            return {
+                "operator_id": operator.operator_id,
+                "username": operator.username,
+                "email": operator.email,
+                "is_admin": operator.is_admin,
+                }, 201
         else:
-            return {"data": {
-                        "operator": {
-                            "operator_id": operator.operator_id,
-                            "username": operator.username,
-                            "email": operator.email,
-                            "is_admin": operator.is_admin,
-                        }},
-                    "status": 200,
-                    "error": f"Alumni already exists."
-                    }
+            return {
+                "error": "Operator exists.",
+                "message": "Conflict: Operator already exists."
+                }, 409
 
     @staticmethod
     def get_operator_by_id(operator_id):
         operator = Operator.query.filter_by(operator_id=operator_id).first()
         if not operator:
             return {
-                "data": None,
-                "status": 404,
-                "error": "No such operator exists."
-            }
+                "error": "Operator not found.",
+                "message": "Operator not found."
+                }, 404
 
         else:
-            return {"data": {
-                        "operator": {
-                            "operator_id": operator.operator_id,
-                            "username": operator.username,
-                            "email": operator.email,
-                            "is_admin": operator.is_admin,
-                        }},
-                    "status": 200,
-                    "error": None
-                    }
+            return {
+                "operator_id": operator.operator_id,
+                "username": operator.username,
+                "email": operator.email,
+                "is_admin": operator.is_admin,
+                }, 200
 
     @staticmethod
     def get_operator_by_email(email):

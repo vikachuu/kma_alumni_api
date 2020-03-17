@@ -31,12 +31,10 @@ class RegisterLink(Resource):
         contacts_number = OdooController.count_number_of_odoo_contacts_by_filter_list(filter_list)
 
         if contacts_number == 0:
-            return {"data": {
-                        "token": None
-                        },
-                    "status": 404,
-                    "error": f"Contact with id {odoo_contact_id} does not exist."
-                    }
+            return {
+                "error": "Odoo contact not found.",
+                "message": "Odoo contact not found."
+                }, 404
 
         # encrypt odoo user id
         token = encode_token(odoo_contact_id)
@@ -49,9 +47,6 @@ class RegisterLink(Resource):
         }
         response = AlumniInviteStatusController.update_invite_status_record(put_data)
 
-        return {"data": {
-                        "token": token
-                        },
-                "status": 200,
-                "error": None
-                }
+        return {
+            "token": token,
+            }, 200

@@ -27,29 +27,23 @@ class OperatorLogin(Resource):
 
         if operator is None:
             return {
-                "data": None,
-                "status": 401,
-                "error": "No operator user with such an email exists."
-            }
+                "error": "Wrong email.",
+                "message": "Unauthorized: wrong email."
+                }, 401
 
         if not operator.check_password(password):
             return {
-                "data": None,
-                "status": 401,
-                "error": "Wrong password."
-            }
+                "error": "Wrong password.",
+                "message": "Unauthorized: wrong password."
+                }, 401
 
         return {
-            "data": {
-                "operator": {
-                        "operator_id": operator.operator_id,
-                        "username": operator.username,
-                        "email": operator.email,
-                        "is_admin": operator.is_admin,
-                    },
-                "access_token": create_access_token(identity=operator.email),
-                "refresh_token": create_refresh_token(identity=operator.email)
-            },
-            "status": 200,
-            "error": None
-        }
+            "operator": {
+                "operator_id": operator.operator_id,
+                "username": operator.username,
+                "email": operator.email,
+                "is_admin": operator.is_admin,
+                },
+            "access_token": create_access_token(identity=operator.email),
+            "refresh_token": create_refresh_token(identity=operator.email)
+            }, 200

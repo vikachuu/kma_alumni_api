@@ -28,25 +28,16 @@ class AlumniInviteStatusController:
             db.session.add(record)
             db.session.commit()
 
-            return {"data": {
-                        "record": {
-                            "odoo_contact_id": record.odoo_contact_id,
-                            "invite_status": record.invite_status,
-                            "status_set_date": record.status_set_date.strftime('%Y-%m-%d'),
-                        }},
-                    "status": 201,
-                    "error": None
-                    }
+            return {
+                "odoo_contact_id": record.odoo_contact_id,
+                "invite_status": record.invite_status,
+                "status_set_date": record.status_set_date.strftime('%Y-%m-%d'),
+                }, 201
         else:
-            return {"data": {
-                        "record": {
-                            "odoo_contact_id": record.odoo_contact_id,
-                            "invite_status": record.invite_status,
-                            "status_set_date": record.status_set_date.strftime('%Y-%m-%d'),
-                        }},
-                    "status": 200,
-                    "error": f"Record already exists."
-                    }
+            return {
+                "error": "Record exists.",
+                "message": "Conflict: Record already exists."
+                }, 409
 
     @staticmethod
     def update_invite_status_record(put_data):
@@ -58,10 +49,9 @@ class AlumniInviteStatusController:
             db.session.add(record)
             db.session.commit()
 
-            return {"data": None,
-                    "status": 200,
-                    "error": None
-                }
+            return {
+                "message": "Record status successfully updated.",
+                }, 200
         else:
             record = AlumniInviteStatus(
                 odoo_contact_id=put_data.get('odoo_contact_id'),
@@ -72,10 +62,9 @@ class AlumniInviteStatusController:
             db.session.add(record)
             db.session.commit()
 
-            return {"data": None,
-                    "status": 201,
-                    "error": None
-                }
+            return {
+                "message": "New record created.",
+                }, 201
 
     @staticmethod
     def delete_invite_status_record(odoo_contact_id):
@@ -85,13 +74,10 @@ class AlumniInviteStatusController:
             db.session.commit()
 
             return {
-                "data": None,
-                "status": 204,
-                "error": None
-            }
+                "message": "Record successfully deleted.",
+                }, 200
         else:
             return {
-                "data": None,
-                "status": 404,
-                "error": "No record with such id to delete."
-            }
+                "error": "Record not found."
+                "message": "Cannot delete: Record not found.",
+                }, 404

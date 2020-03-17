@@ -25,12 +25,10 @@ class Confirm(Resource):
         alumni = AlumniController.get_alumni_by_uuid(alumni_uuid)
 
         if alumni is None:
-            return {"data": {
-                        "alumni_uuid": alumni_uuid
-                        },
-                    "status": 404,
-                    "error": f"Alumni does not exist."
-                    }
+            return {
+                "error": "Alumni not found.",
+                "message": "Alumni not found."
+                }, 404
         else:
             # update alumni status to confirmed
             from app.controllers.alumni_controller import AlumniController
@@ -55,11 +53,7 @@ class Confirm(Resource):
                 "user_confirmed": alumni.user_confirmed,
             })
             return {
-                "data": {
-                    "alumni": contact,
-                    "access_token": create_access_token(identity=alumni.email),
-                    "refresh_token": create_refresh_token(identity=alumni.email)
-                },
-                "status": 200,
-                "error": None
-            }
+                "alumni": contact,
+                "access_token": create_access_token(identity=alumni.email),
+                "refresh_token": create_refresh_token(identity=alumni.email)
+                }, 200

@@ -50,43 +50,34 @@ class AlumniController:
             db.session.add(alumni)
             db.session.commit()
 
-            return {"data": {
-                        "alumni": {
-                            "alumni_id": alumni.alumni_id,
-                            "odoo_contact_id": alumni.odoo_contact_id,
-                            "alumni_uuid": alumni.alumni_uuid,
-                            "email": alumni.email,
-                            "password": alumni.password,
-                            "user_confirmed": alumni.user_confirmed,
-                            "allow_show_contacts": alumni.allow_show_contacts,
-                        }},
-                    "status": 201,
-                    "error": None
-                    }
+            return {
+                "alumni_id": alumni.alumni_id,
+                "odoo_contact_id": alumni.odoo_contact_id,
+                "alumni_uuid": alumni.alumni_uuid,
+                "email": alumni.email,
+                "password": alumni.password,
+                "user_confirmed": alumni.user_confirmed,
+                "allow_show_contacts": alumni.allow_show_contacts,
+                }, 201
         else:
-            return {"data": {
-                        "alumni": {
-                            "alumni_id": alumni.alumni_id,
-                            "odoo_contact_id": alumni.odoo_contact_id,
-                            "alumni_uuid": alumni.alumni_uuid,
-                            "email": alumni.email,
-                            "password": alumni.password,
-                            "user_confirmed": alumni.user_confirmed,
-                            "allow_show_contacts": alumni.allow_show_contacts,
-                        }},
-                    "status": 200,
-                    "error": f"Alumni already exists."
-                    }
+            return {
+                "error": "Alumni exists.",
+                "message": "Conflict: Alumni already exists."
+                }, 409
 
     @staticmethod
     def update_alumni_user(put_data):
         alumni = Alumni.query.filter_by(alumni_id=put_data.get('alumni_id')).first()
+        if not alumni:
+            return {
+                "error": "Alumni not found.",
+                "message": "Alumni not found."
+                }, 404
+
         alumni.user_confirmed = put_data.get('user_confirmed')
         db.session.add(alumni)
         db.session.commit()
         
         return {
-            "data": None,
-            "status": 200,
-            "error": None
-        }
+            "message": "Alumni succesfully updated."
+            }, 200

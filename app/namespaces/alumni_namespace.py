@@ -1,5 +1,5 @@
 from flask import request
-from flask_restplus import Namespace, Resource, fields
+from flask_restplus import Namespace, Resource, fields, abort
 
 
 api_alumni = Namespace('alumni', description='Requests to alumni model.')
@@ -82,11 +82,7 @@ class AlumniRegistered(Resource):
             contacts = [x for x in contacts if x['user_confirmed']]
 
 
-        return {
-                "data": contacts,
-                "status": 200,
-                "error": None
-            }
+        return contacts, 200
 
 
 @api_alumni.route("/unregistered")
@@ -171,11 +167,7 @@ class AlumniUnregistered(Resource):
         if invite_status is not None:
             contacts = [x for x in contacts if x['alumni_status'] == invite_status]
 
-        return {
-                "data": contacts,
-                "status": 200,
-                "error": None
-            }
+        return contacts, 200
 
 
 @api_alumni.route("/")
@@ -239,11 +231,7 @@ class Alumni(Resource):
                 "allow_show_contacts": registered_alumni_odoo_ids_allow_show_contacts.get(str(x['id']), False)
             })
 
-        return {
-                "data": contacts,
-                "status": 200,
-                "error": None
-            }
+        return contacts, 200
 
     @api_alumni.doc(body=resource_fields)
     def post(self):
@@ -271,10 +259,9 @@ class AlumniId(Resource):
 
         if not len(contacts):
             return {
-                "data": None,
-                "status": 404,
-                "error": "No odoo contact with such id exists."
-                }
+                "error": "Odoo contact not found.",
+                "message": "No odoo contact with such an id exists."
+                }, 404
 
         contact = contacts[0]
 
@@ -289,13 +276,7 @@ class AlumniId(Resource):
                     "allow_show_contacts": alumni.allow_show_contacts,
                 })
 
-        return {
-                "data": {
-                    "alumni": contact
-                },
-                "status": 200,
-                "error": None
-                }
+        return contact, 200
 
 
 @api_alumni.route("/<odoo_contact_id>/groupmates")
@@ -321,10 +302,9 @@ class AlumniGroupmates(Resource):
 
         if not len(contacts):
             return {
-                "data": None,
-                "status": 404,
-                "error": "No odoo contact with such an id exists."
-                }
+                "error": "Odoo contact not found.",
+                "message": "No odoo contact with such an id exists."
+                }, 404
 
         contact = contacts[0]
 
@@ -349,10 +329,9 @@ class AlumniGroupmates(Resource):
 
         else:
             return {
-                "data": None,
-                "status": 400,
-                "error": "Not enough query params."
-            } 
+                "error": "No required query parameters.",
+                "message": "No required query parameters."
+                }, 400
 
         # get all groupmates (both bachelor and masters)
         contacts = OdooController.get_odoo_contacts_by_filter_list(groupmates_filter_list, offset, limit)
@@ -368,8 +347,4 @@ class AlumniGroupmates(Resource):
                 "allow_show_contacts": registered_alumni_odoo_ids_allow_show_contacts.get(str(x['id']), False)
             })
 
-        return {
-                "data": contacts,
-                "status": 200,
-                "error": None
-            }
+        return contacts, 200

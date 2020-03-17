@@ -48,50 +48,45 @@ class UpdateFormController:
             db.session.add(update_form)
             db.session.commit()
 
-            return {"data": {
-                        "update_form": {
-                            "form_id": update_form.form_id,
-                            "form_status": update_form.form_status,
-                            "full_name_uk": update_form.full_name_uk,
-                            "date_of_birth": update_form.date_of_birth.strftime('%Y-%m-%d'),
-                            "image": update_form.image,
+            return {
+                "form_id": update_form.form_id,
+                "form_status": update_form.form_status,
+                "full_name_uk": update_form.full_name_uk,
+                "date_of_birth": update_form.date_of_birth.strftime('%Y-%m-%d'),
+                "image": update_form.image,
 
-                            "country": update_form.country,
-                            "city": update_form.city,
-                            "mobile": update_form.mobile,
-                            "skype": update_form.skype,
-                            "telegram": update_form.telegram,
-                            "viber": update_form.viber,
-                            "facebook": update_form.facebook,
-                            "linkedin": update_form.linkedin,
+                "country": update_form.country,
+                "city": update_form.city,
+                "mobile": update_form.mobile,
+                "skype": update_form.skype,
+                "telegram": update_form.telegram,
+                "viber": update_form.viber,
+                "facebook": update_form.facebook,
+                "linkedin": update_form.linkedin,
 
-                            "is_bachelor": update_form.is_bachelor,
-                            "bachelor_faculty": update_form.bachelor_faculty,
-                            "bachelor_speciality": update_form.bachelor_speciality,
-                            "bachelor_entry_year": update_form.bachelor_entry_year,
-                            "bachelor_finish_year": update_form.bachelor_finish_year,
+                "is_bachelor": update_form.is_bachelor,
+                "bachelor_faculty": update_form.bachelor_faculty,
+                "bachelor_speciality": update_form.bachelor_speciality,
+                "bachelor_entry_year": update_form.bachelor_entry_year,
+                "bachelor_finish_year": update_form.bachelor_finish_year,
 
-                            "is_master": update_form.is_master,
-                            "master_faculty": update_form.master_faculty,
-                            "master_speciality": update_form.master_speciality,
-                            "master_entry_year": update_form.master_entry_year,
-                            "master_finish_year": update_form.master_finish_year,
+                "is_master": update_form.is_master,
+                "master_faculty": update_form.master_faculty,
+                "master_speciality": update_form.master_speciality,
+                "master_entry_year": update_form.master_entry_year,
+                "master_finish_year": update_form.master_finish_year,
 
-                            "company": update_form.company,
-                            "job_position": update_form.job_position,
+                "company": update_form.company,
+                "job_position": update_form.job_position,
 
-                            "alumni_id": update_form.alumni_id,
-                            "operator_id": update_form.operator_id,
-                        }},
-                    "status": 201,
-                    "error": None
-                    }
+                "alumni_id": update_form.alumni_id,
+                "operator_id": update_form.operator_id,
+                }, 201
         else:
             return {
-                "data": None,
-                "status": 400,
-                "error": "There is an active update form for this alumnus. Only one active form is accepted."
-            }
+                "error": "Active form exists.",
+                "message": "There is an active update form for this alumnus. Only one active form is accepted."
+            }, 400
 
     @staticmethod
     def get_all_update_forms(form_status):
@@ -137,11 +132,7 @@ class UpdateFormController:
                 "operator_id": update_form.operator_id,
             } for update_form in update_forms]
 
-        return {
-            'data': result_forms,
-            'status': 200,
-            'error': None
-        }
+        return result_forms, 200
 
     @staticmethod
     def get_alumni_update_form_history(alumni_id):
@@ -181,24 +172,22 @@ class UpdateFormController:
                 "alumni_id": update_form.alumni_id,
                 "operator_id": update_form.operator_id,
             } for update_form in update_forms]
-        return result_forms
+        return result_forms, 200
 
     @staticmethod
     def change_update_form_status(form_id, put_data):
         update_form = UpdateForm.query.filter_by(form_id=form_id).first()
         if not update_form:
             return {
-                'data': None,
-                'status': 204,
-                'error': "No update form found."
-            }
+                "error": "Form not found.",
+                "message": "Form not found."
+            }, 404
         else:
             update_form.form_status = put_data.get('form_status')
             update_form.operator_id = put_data.get('operator_id')
             db.session.add(update_form)
             db.session.commit()
 
-            return {"data": None,
-                    "status": 200,
-                    "error": None
-                }
+            return {
+                "message": "Form successfully updated."
+                }, 200

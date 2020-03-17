@@ -40,12 +40,10 @@ class Register(Resource):
         odoo_contact_id, expiration_date = decode_token(token)
 
         if datetime.now() > expiration_date:
-            return {"data": {
-                        "token": token
-                        },
-                    "status": 401,
-                    "error": "Registration link is expired."
-                    }
+            return {
+                "error": "Link expired.",
+                "message": "Unauthorized: Registration link is expired."
+                }, 401
 
         # check if such odoo user exists
         filter_list = []
@@ -54,12 +52,10 @@ class Register(Resource):
         contacts_number = OdooController.count_number_of_odoo_contacts_by_filter_list(filter_list)
 
         if contacts_number == 0:
-            return {"data": {
-                        "token": token
-                        },
-                    "status": 404,
-                    "error": f"Contact does not exist."
-                    }
+            return {
+                "error": "Odoo contact not found.",
+                "message": "Odoo contact not found."
+                }, 404
 
         # create alumni user
         from app.controllers.alumni_controller import AlumniController
@@ -67,7 +63,7 @@ class Register(Resource):
         response = AlumniController.create_alumni_user(post_data)
 
         
-        if response.get("status") == 201:
+        if response[1] == 201:
             # delete record in alumni invite status
             from app.controllers.alumni_invite_status_controller import AlumniInviteStatusController
             AlumniInviteStatusController.delete_invite_status_record(odoo_contact_id)
