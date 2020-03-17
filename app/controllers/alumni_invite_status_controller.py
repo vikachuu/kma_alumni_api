@@ -78,6 +78,6 @@ class AlumniInviteStatusController:
                 }, 200
         else:
             return {
-                "error": "Record not found."
+                "error": "Record not found.",
                 "message": "Cannot delete: Record not found.",
                 }, 404
