@@ -3,10 +3,11 @@ from datetime import datetime
 from dateutil import parser
 
 from flask import request
-from flask_restplus import Namespace, Resource, fields
+from flask_restplus import Namespace, Resource, fields, abort
 from cryptography.fernet import Fernet
 
 from app.utils.email_sender import send_confirmation_email
+from app.utils.exceptions import OdooIsDeadError
 
 
 api_register = Namespace("register", description="Request to sign up new alumni.")
@@ -41,7 +42,7 @@ class Register(Resource):
 
         if datetime.now() > expiration_date:
             return {
-                "error": "Link expired.",
+                "error_id": "alumni_register_link_expired_error",
                 "message": "Unauthorized: Registration link is expired."
                 }, 401
 
@@ -49,11 +50,14 @@ class Register(Resource):
         filter_list = []
         filter_list.append(['id', '=', odoo_contact_id])
         from app.controllers.odoo_controller import OdooController
-        contacts_number = OdooController.count_number_of_odoo_contacts_by_filter_list(filter_list)
+        try:
+            contacts_number = OdooController.count_number_of_odoo_contacts_by_filter_list(filter_list)
+        except OdooIsDeadError as err:
+            abort(503, err, error_id='odoo_connection_error')
 
         if contacts_number == 0:
             return {
-                "error": "Odoo contact not found.",
+                "error_id": "odoo_contact_not_found_error",
                 "message": "Odoo contact not found."
                 }, 404
 

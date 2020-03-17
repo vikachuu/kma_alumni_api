@@ -1,6 +1,8 @@
 from flask import request
-from flask_restplus import Namespace, Resource, fields
+from flask_restplus import Namespace, Resource, fields, abort
 from flask_jwt_extended import create_access_token, create_refresh_token
+
+from app.utils.exceptions import OdooIsDeadError
 
 
 api_confim = Namespace("confirm", description="Request to confirm new alumni creation.")
@@ -26,7 +28,7 @@ class Confirm(Resource):
 
         if alumni is None:
             return {
-                "error": "Alumni not found.",
+                "error_id": "alumni_not_found_error",
                 "message": "Alumni not found."
                 }, 404
         else:
@@ -43,7 +45,10 @@ class Confirm(Resource):
             filter_list.append(['id', '=', int(alumni.odoo_contact_id)])
 
             from app.controllers.odoo_controller import OdooController
-            contacts = OdooController.get_odoo_contacts_by_filter_list(filter_list, 0, 0)
+            try:
+                contacts = OdooController.get_odoo_contacts_by_filter_list(filter_list, 0, 0)
+            except OdooIsDeadError as err:
+                abort(503, err, error_id='odoo_connection_error')
 
             contact = contacts[0]
 

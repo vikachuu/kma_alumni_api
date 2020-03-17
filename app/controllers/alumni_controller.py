@@ -61,7 +61,7 @@ class AlumniController:
                 }, 201
         else:
             return {
-                "error": "Alumni exists.",
+                "error_id": "alumni_exists_error",
                 "message": "Conflict: Alumni already exists."
                 }, 409
 
@@ -70,7 +70,7 @@ class AlumniController:
         alumni = Alumni.query.filter_by(alumni_id=put_data.get('alumni_id')).first()
         if not alumni:
             return {
-                "error": "Alumni not found.",
+                "error_id": "alumni_not_found_error",
                 "message": "Alumni not found."
                 }, 404
 

@@ -84,7 +84,7 @@ class UpdateFormController:
                 }, 201
         else:
             return {
-                "error": "Active form exists.",
+                "error_id": "active_form_exists_error",
                 "message": "There is an active update form for this alumnus. Only one active form is accepted."
             }, 400
 
@@ -179,7 +179,7 @@ class UpdateFormController:
         update_form = UpdateForm.query.filter_by(form_id=form_id).first()
         if not update_form:
             return {
-                "error": "Form not found.",
+                "error_id": "form_not_found_error",
                 "message": "Form not found."
             }, 404
         else:

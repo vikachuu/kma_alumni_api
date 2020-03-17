@@ -28,7 +28,7 @@ class OperatorController:
                 }, 201
         else:
             return {
-                "error": "Operator exists.",
+                "error_id": "operator_exists_error",
                 "message": "Conflict: Operator already exists."
                 }, 409
 
@@ -37,7 +37,7 @@ class OperatorController:
         operator = Operator.query.filter_by(operator_id=operator_id).first()
         if not operator:
             return {
-                "error": "Operator not found.",
+                "error_id": "operator_not_found_error",
                 "message": "Operator not found."
                 }, 404
 

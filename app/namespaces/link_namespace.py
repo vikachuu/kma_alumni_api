@@ -2,7 +2,9 @@ import os
 from datetime import datetime, timedelta
 
 from cryptography.fernet import Fernet
-from flask_restplus import Namespace, Resource
+from flask_restplus import Namespace, Resource, abort
+
+from app.utils.exceptions import OdooIsDeadError
 
 
 api_register_link = Namespace('register_link', description='Requests to get link to register.')
@@ -28,11 +30,14 @@ class RegisterLink(Resource):
         filter_list = []
         filter_list.append(['id', '=', odoo_contact_id])
         from app.controllers.odoo_controller import OdooController
-        contacts_number = OdooController.count_number_of_odoo_contacts_by_filter_list(filter_list)
+        try:
+            contacts_number = OdooController.count_number_of_odoo_contacts_by_filter_list(filter_list)
+        except OdooIsDeadError as err:
+            abort(503, err, error_id='odoo_connection_error')
 
         if contacts_number == 0:
             return {
-                "error": "Odoo contact not found.",
+                "error_id": "odoo_contact_not_found_error",
                 "message": "Odoo contact not found."
                 }, 404
 

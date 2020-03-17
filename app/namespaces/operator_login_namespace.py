@@ -27,13 +27,13 @@ class OperatorLogin(Resource):
 
         if operator is None:
             return {
-                "error": "Wrong email.",
+                "error_id": "operator_login_wrong_email_error",
                 "message": "Unauthorized: wrong email."
                 }, 401
 
         if not operator.check_password(password):
             return {
-                "error": "Wrong password.",
+                "error_id": "operator_login_wrong_password_error",
                 "message": "Unauthorized: wrong password."
                 }, 401
 

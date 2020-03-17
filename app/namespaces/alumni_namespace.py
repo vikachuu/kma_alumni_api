@@ -1,6 +1,8 @@
 from flask import request
 from flask_restplus import Namespace, Resource, fields, abort
 
+from app.utils.exceptions import OdooIsDeadError
+
 
 api_alumni = Namespace('alumni', description='Requests to alumni model.')
 
@@ -66,7 +68,10 @@ class AlumniRegistered(Resource):
         filter_list.append(['master_year_out', '=', master_finish_year]) if master_finish_year else None
 
         from app.controllers.odoo_controller import OdooController
-        contacts = OdooController.get_odoo_contacts_by_filter_list(filter_list, offset, limit)
+        try:
+            contacts = OdooController.get_odoo_contacts_by_filter_list(filter_list, offset, limit)
+        except OdooIsDeadError as err:
+            abort(503, err, error_id='odoo_connection_error')
 
         # map contact
         for x in contacts:
@@ -129,7 +134,10 @@ class AlumniUnregistered(Resource):
 
         # get all odoo alumni ids
         from app.controllers.odoo_controller import OdooController
-        all_alumni_ids = OdooController.get_odoo_contacts_ids_by_filter_list(filter_list)
+        try:
+            all_alumni_ids = OdooController.get_odoo_contacts_ids_by_filter_list(filter_list)
+        except OdooIsDeadError as err:
+            abort(503, err, error_id='odoo_connection_error')
 
         # get all registered alumni ids
         from app.controllers.alumni_controller import AlumniController
@@ -150,7 +158,10 @@ class AlumniUnregistered(Resource):
         filter_list.append(['master_year_out', '=', master_finish_year]) if master_finish_year else None
 
         # get contacts from odoo
-        contacts = OdooController.get_odoo_contacts_by_filter_list(filter_list, offset, limit)
+        try:
+            contacts = OdooController.get_odoo_contacts_by_filter_list(filter_list, offset, limit)
+        except OdooIsDeadError as err:
+            abort(503, err, error_id='odoo_connection_error')
 
         # get all NOT registered alumni ids with statuses (invited, no response, rejected etc.)
         from app.controllers.alumni_invite_status_controller import AlumniInviteStatusController
@@ -218,7 +229,10 @@ class Alumni(Resource):
 
         # get all alumni from odoo
         from app.controllers.odoo_controller import OdooController
-        contacts = OdooController.get_odoo_contacts_by_filter_list(filter_list, offset, limit)
+        try:
+            contacts = OdooController.get_odoo_contacts_by_filter_list(filter_list, offset, limit)
+        except OdooIsDeadError as err:
+            abort(503, err, error_id='odoo_connection_error')
 
         # get all registered alumni id
         from app.controllers.alumni_controller import AlumniController
@@ -255,11 +269,14 @@ class AlumniId(Resource):
         filter_list.append(['id', '=', int(odoo_contact_id)])
 
         from app.controllers.odoo_controller import OdooController
-        contacts = OdooController.get_odoo_contacts_by_filter_list(filter_list, 0, 0)
+        try:
+            contacts = OdooController.get_odoo_contacts_by_filter_list(filter_list, 0, 0)
+        except OdooIsDeadError as err:
+            abort(503, err, error_id='odoo_connection_error')
 
         if not len(contacts):
             return {
-                "error": "Odoo contact not found.",
+                "error_id": "odoo_contact_not_found_error",
                 "message": "No odoo contact with such an id exists."
                 }, 404
 
@@ -298,11 +315,14 @@ class AlumniGroupmates(Resource):
         filter_list.append(['id', '=', int(odoo_contact_id)])
 
         from app.controllers.odoo_controller import OdooController
-        contacts = OdooController.get_odoo_contact_with_groupmates_fields(filter_list)
+        try:
+            contacts = OdooController.get_odoo_contact_with_groupmates_fields(filter_list)
+        except OdooIsDeadError as err:
+            abort(503, err, error_id='odoo_connection_error')
 
         if not len(contacts):
             return {
-                "error": "Odoo contact not found.",
+                "error_id": "odoo_contact_not_found_error",
                 "message": "No odoo contact with such an id exists."
                 }, 404
 
@@ -329,12 +349,15 @@ class AlumniGroupmates(Resource):
 
         else:
             return {
-                "error": "No required query parameters.",
+                "error_id": "no_required_query_params_error",
                 "message": "No required query parameters."
                 }, 400
 
         # get all groupmates (both bachelor and masters)
-        contacts = OdooController.get_odoo_contacts_by_filter_list(groupmates_filter_list, offset, limit)
+        try:
+            contacts = OdooController.get_odoo_contacts_by_filter_list(groupmates_filter_list, offset, limit)
+        except OdooIsDeadError as err:
+            abort(503, err, error_id='odoo_connection_error')
 
          # get all registered alumni id
         from app.controllers.alumni_controller import AlumniController

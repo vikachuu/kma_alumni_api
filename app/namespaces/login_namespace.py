@@ -1,6 +1,8 @@
 from flask import request
-from flask_restplus import Namespace, Resource, fields
+from flask_restplus import Namespace, Resource, fields, abort
 from flask_jwt_extended import create_access_token, create_refresh_token
+
+from app.utils.exceptions import OdooIsDeadError
 
 
 api_login = Namespace('login', description='Login to alumni service.')
@@ -28,13 +30,13 @@ class Login(Resource):
 
         if alumni is None:
             return {
-                "error": "Wrong email.",
+                "error_id": "alumni_login_wrong_email_error",
                 "message": "Unauthorized: wrong email."
                 }, 401
 
         if not alumni.check_password(password):
             return {
-                "error": "Wrong password.",
+                "error_id": "alumni_login_wrong_password_error",
                 "message": "Unauthorized: wrong password."
                 }, 401
         
@@ -43,11 +45,14 @@ class Login(Resource):
         filter_list.append(['id', '=', int(alumni.odoo_contact_id)])
 
         from app.controllers.odoo_controller import OdooController
-        contact = OdooController.get_odoo_contacts_by_filter_list(filter_list, 0, 0)
+        try:
+            contact = OdooController.get_odoo_contacts_by_filter_list(filter_list, 0, 0)
+        except OdooIsDeadError as err:
+            abort(503, err, error_id='odoo_connection_error')
 
         if not contact:
             return {
-                "error": "Odoo contact not found.",
+                "error_id": "odoo_contact_not_found_error",
                 "message": "Odoo contact not found."
                 }, 404
 

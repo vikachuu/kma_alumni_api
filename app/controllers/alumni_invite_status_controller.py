@@ -35,7 +35,7 @@ class AlumniInviteStatusController:
                 }, 201
         else:
             return {
-                "error": "Record exists.",
+                "error_id": "invite_status_record_exists_error",
                 "message": "Conflict: Record already exists."
                 }, 409
 
@@ -78,6 +78,6 @@ class AlumniInviteStatusController:
                 }, 200
         else:
             return {
-                "error": "Record not found.",
+                "error_id": "invite_status_record_not_found_error",
                 "message": "Cannot delete: Record not found.",
                 }, 404
