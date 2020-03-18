@@ -54,8 +54,11 @@ class Confirm(Resource):
 
             # return alumni data
             contact.update({
+                "alumni_id": alumni.alumni_id,
+                "alumni_email": alumni.email,
                 "alumni_uuid": alumni.alumni_uuid,
                 "user_confirmed": alumni.user_confirmed,
+                "allow_show_contacts": alumni.allow_show_contacts,
             })
             return {
                 "alumni": contact,

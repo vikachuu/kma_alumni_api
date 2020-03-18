@@ -17,7 +17,9 @@ class OdooController:
             from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
             contacts = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'search_read',
                     [filter_list],
-                    {'fields': ['name', 'email', 'function', 'parent_id', 'facebook_link', 'linkedin_link', 'is_alumni',
+                    {'fields': ['name', 'email', 'function', 'parent_id', 'contact_city', 'contact_country',
+                    'birth_date', 'facebook_link', 'linkedin_link', 'skype', 'telegram', 'viber', 'mobile', 
+                    'diploma_naukma', 'is_alumni',
                     'bachelor_degree', 'bachelor_faculty', 'bachelor_speciality', 'bachelor_year_in', 'bachelor_year_out',
                     'master_degree', 'master_faculty', 'master_speciality', 'master_year_in', 'master_year_out',
                     'image_1920'],

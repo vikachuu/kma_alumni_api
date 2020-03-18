@@ -77,6 +77,8 @@ class AlumniRegistered(Resource):
         for x in contacts:
             alumni = AlumniController.get_alumni_by_odoo_id(str(x['id']))
             x.update({
+                "alumni_id": alumni.alumni_id,
+                "alumni_email": alumni.email,
                 "alumni_uuid": alumni.alumni_uuid,
                 "user_confirmed": alumni.user_confirmed,
                 "allow_show_contacts": alumni.allow_show_contacts,
@@ -288,6 +290,8 @@ class AlumniId(Resource):
 
         if alumni is not None:
             contact.update({
+                    "alumni_id": alumni.alumni_id,
+                    "alumni_email": alumni.email,
                     "alumni_uuid": alumni.alumni_uuid,
                     "user_confirmed": alumni.user_confirmed,
                     "allow_show_contacts": alumni.allow_show_contacts,
