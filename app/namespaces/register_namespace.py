@@ -73,8 +73,8 @@ class Register(Resource):
             AlumniInviteStatusController.delete_invite_status_record(odoo_contact_id)
 
             # send email for confirmation
-            receiver_email = response['data']['alumni']['email']
-            alumni_uuid = response['data']['alumni']['alumni_uuid']
+            receiver_email = response['email']
+            alumni_uuid = response['alumni_uuid']
             send_confirmation_email(receiver_email, alumni_uuid)
 
         return response

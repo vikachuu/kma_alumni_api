@@ -16,6 +16,7 @@ from app.namespaces.login_namespace import api_login
 from app.namespaces.operator_login_namespace import api_operator_login
 from app.namespaces.update_form_namespace import api_update_form
 from app.namespaces.company_namespace import api_company
+from app.namespaces.countries_namespace import api_country
 
 
 api.add_namespace(api_health)
@@ -29,3 +30,4 @@ api.add_namespace(api_login)
 api.add_namespace(api_operator_login)
 api.add_namespace(api_update_form)
 api.add_namespace(api_company)
+api.add_namespace(api_country)

@@ -1,6 +1,8 @@
 from flask import request
 from flask_restplus import Namespace, Resource, fields
 
+from app.utils.exceptions import OdooIsDeadError
+
 
 api_update_form = Namespace('update_form', description='Requests to update form model.')
 
@@ -8,6 +10,7 @@ update_form_fields = api_update_form.model('Create update form.', {
     "full_name_uk": fields.String,
     "date_of_birth": fields.String,
     "image": fields.String,
+    "email": fields.String,
 
     "country": fields.String,
     "city": fields.String,
@@ -34,7 +37,6 @@ update_form_fields = api_update_form.model('Create update form.', {
     "job_position": fields.String,
 
     "alumni_id": fields.Integer,
-    "operator_id": fields.Integer,
 })
 
 
@@ -82,7 +84,7 @@ change_update_form_status_fields = api_update_form.model('Update update form sta
 class UpdateFormId(Resource):
 
     @api_update_form.doc(body=change_update_form_status_fields, params={
-        'form_id': "Id of update form in which status changed."
+        'form_id': "Id of update form in which status changed.",
     })
     def put(self, form_id):
         """Change update form status and operator id who did the change.
@@ -90,3 +92,69 @@ class UpdateFormId(Resource):
         from app.controllers.update_form_controller import UpdateFormController
         put_data = request.get_json()
         return UpdateFormController.change_update_form_status(form_id, put_data)
+
+
+confirm_update_form_fields = api_update_form.model('Confirm update form.', {
+    "form_id": fields.Integer,
+    "full_name_uk": fields.String,
+    "date_of_birth": fields.String,
+    "image": fields.String,
+    "email": fields.String,
+
+    "country": fields.String,
+    "city": fields.String,
+    "mobile": fields.String,
+    "skype": fields.String,
+    "telegram": fields.String,
+    "viber": fields.String,
+    "facebook": fields.String,
+    "linkedin": fields.String,
+
+    "is_bachelor": fields.Boolean,
+    "bachelor_faculty": fields.String,
+    "bachelor_speciality": fields.String,
+    "bachelor_entry_year": fields.String,
+    "bachelor_finish_year": fields.String,
+
+    "is_master": fields.Boolean,
+    "master_faculty": fields.String,
+    "master_speciality": fields.String,
+    "master_entry_year": fields.String,
+    "master_finish_year": fields.String,
+
+    "company_id": fields.Integer,
+    "job_position": fields.String,
+
+    "alumni_id": fields.Integer,
+    "operator_id": fields. Integer
+})
+
+
+@api_update_form.route("/confirm")
+class UpdateFormConfirm(Resource):
+
+    @api_update_form.doc(body=confirm_update_form_fields)
+    def post(self):
+        """Confirm update form - send data to odoo.
+        """
+        post_data = request.get_json()
+        print(post_data)
+        from app.controllers.alumni_controller import AlumniController
+        odoo_contact_id = AlumniController.get_odoo_contact_id_by_alumni_id(post_data.get('alumni_id'))
+
+        from app.controllers.odoo_controller import OdooController
+        try:
+            OdooController.update_odoo_contact(odoo_contact_id, post_data)
+        except OdooIsDeadError as err:
+            abort(503, err, error_id='odoo_connection_error')
+
+        # if success - change update form status and operator who confirmed
+        from app.controllers.update_form_controller import UpdateFormController
+        form_id = post_data.get('form_id')
+        put_data = {
+            'form_status': 'approved',
+            'operator_id': post_data.get('operator_id')
+        }
+        UpdateFormController.change_update_form_status(form_id, put_data)
+
+        return {"message": "Odoo contact successfully updated."}, 200

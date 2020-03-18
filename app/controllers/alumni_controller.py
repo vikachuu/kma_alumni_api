@@ -35,6 +35,11 @@ class AlumniController:
         return dict(odoo_id_show_contact)
 
     @staticmethod
+    def get_odoo_contact_id_by_alumni_id(alumni_id):
+        odoo_contact_id = db.session.query(Alumni.odoo_contact_id).filter_by(alumni_id=alumni_id).first()
+        return int(odoo_contact_id[0])
+
+    @staticmethod
     def create_alumni_user(post_data):
         # check if user already exists
         alumni = Alumni.query.filter_by(odoo_contact_id=post_data.get('odoo_contact_id')).first()

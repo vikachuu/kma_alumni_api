@@ -11,6 +11,7 @@ class UpdateForm(db.Model):
     full_name_uk = db.Column(db.String(100))
     date_of_birth = db.Column(db.Date())
     image = db.Column(db.String(10000))
+    email = db.Column(db.String(100))
 
     country = db.Column(db.String(100))  # selection field
     city = db.Column(db.String(100))
@@ -47,7 +48,7 @@ class UpdateForm(db.Model):
                                                       ondelete="NO ACTION"), nullable=True)
     operator = db.relationship("Operator", back_populates="update_form")
 
-    def __init__(self, full_name_uk, date_of_birth, image, country, city, mobile, skype,
+    def __init__(self, full_name_uk, date_of_birth, image, email, country, city, mobile, skype,
                 telegram, viber, facebook, linkedin, is_bachelor, bachelor_faculty, bachelor_speciality,
                 bachelor_entry_year, bachelor_finish_year, is_master, master_faculty, master_speciality,
                 master_entry_year, master_finish_year, company, job_position, alumni_id, operator_id):
@@ -56,6 +57,7 @@ class UpdateForm(db.Model):
         self.full_name_uk = full_name_uk
         self.date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d').date()
         self.image = image
+        self.email = email
         
         self.country = country
         self.city = city

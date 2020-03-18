@@ -13,6 +13,7 @@ class UpdateFormController:
                 full_name_uk=post_data.get('full_name_uk'),
                 date_of_birth=post_data.get('date_of_birth'),
                 image=post_data.get('image'),
+                email=post_data.get('email'),
 
                 country=post_data.get('country'),
                 city=post_data.get('city'),
@@ -41,7 +42,7 @@ class UpdateFormController:
                 job_position=post_data.get('job_position'),
 
                 alumni_id=post_data.get('alumni_id'),
-                operator_id=post_data.get('operator_id'),
+                operator_id=None,
             )
 
             # insert new update form
@@ -54,6 +55,7 @@ class UpdateFormController:
                 "full_name_uk": update_form.full_name_uk,
                 "date_of_birth": update_form.date_of_birth.strftime('%Y-%m-%d'),
                 "image": update_form.image,
+                "email": update_form.email,
 
                 "country": update_form.country,
                 "city": update_form.city,
@@ -103,6 +105,7 @@ class UpdateFormController:
                 "full_name_uk": update_form.full_name_uk,
                 "date_of_birth": update_form.date_of_birth.strftime('%Y-%m-%d'),
                 "image": update_form.image,
+                "email": update_forms.email,
 
                 "country": update_form.country,
                 "city": update_form.city,
@@ -144,6 +147,7 @@ class UpdateFormController:
                 "full_name_uk": update_form.full_name_uk,
                 "date_of_birth": update_form.date_of_birth.strftime('%Y-%m-%d'),
                 "image": update_form.image,
+                "email": update_form.email,
 
                 "country": update_form.country,
                 "city": update_form.city,
