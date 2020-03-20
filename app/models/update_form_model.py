@@ -10,7 +10,7 @@ class UpdateForm(db.Model):
 
     full_name_uk = db.Column(db.String(100))
     date_of_birth = db.Column(db.Date())
-    image = db.Column(db.String(10000))
+    image = db.Column(db.String(500000))
     email = db.Column(db.String(100))
 
     country = db.Column(db.String(100))  # selection field
