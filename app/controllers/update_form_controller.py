@@ -105,7 +105,7 @@ class UpdateFormController:
                 "full_name_uk": update_form.full_name_uk,
                 "date_of_birth": update_form.date_of_birth.strftime('%Y-%m-%d'),
                 "image": update_form.image,
-                "email": update_forms.email,
+                "email": update_form.email,
 
                 "country": update_form.country,
                 "city": update_form.city,
