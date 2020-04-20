@@ -27,7 +27,7 @@ class OdooController:
                     'limit': int(limit)})
         except ConnectionRefusedError as err:
             raise OdooIsDeadError(err)
-        except xmlrpc.cl1ient.ProtocolError as err:
+        except xmlrpc.client.ProtocolError as err:
             raise OdooIsDeadError(err)
         return contacts
 
@@ -39,7 +39,7 @@ class OdooController:
                             'search',[filter_list])
         except ConnectionRefusedError as err:
             raise OdooIsDeadError(err)
-        except xmlrpc.cl1ient.ProtocolError as err:
+        except xmlrpc.client.ProtocolError as err:
             raise OdooIsDeadError(err)
         return odoo_contacts_ids
 
@@ -52,7 +52,7 @@ class OdooController:
                         {'fields': ['bachelor_speciality', 'bachelor_year_in', 'master_speciality', 'master_year_in',],})
         except ConnectionRefusedError as err:
             raise OdooIsDeadError(err)
-        except xmlrpc.cl1ient.ProtocolError as err:
+        except xmlrpc.client.ProtocolError as err:
             raise OdooIsDeadError(err)
         return contacts
 
@@ -64,7 +64,7 @@ class OdooController:
                     [filter_list])
         except ConnectionRefusedError as err:
             raise OdooIsDeadError(err)
-        except xmlrpc.cl1ient.ProtocolError as err:
+        except xmlrpc.client.ProtocolError as err:
             raise OdooIsDeadError(err)
         return contacts_number
 
@@ -77,7 +77,7 @@ class OdooController:
                     {'fields': ['name'],})
         except ConnectionRefusedError as err:
             raise OdooIsDeadError(err)
-        except xmlrpc.cl1ient.ProtocolError as err:
+        except xmlrpc.client.ProtocolError as err:
             raise OdooIsDeadError(err)
         return companies
 
@@ -89,7 +89,7 @@ class OdooController:
                     {'fields': ['name'],})
         except ConnectionRefusedError as err:
             raise OdooIsDeadError(err)
-        except xmlrpc.cl1ient.ProtocolError as err:
+        except xmlrpc.client.ProtocolError as err:
             raise OdooIsDeadError(err)
         return companies
 
@@ -136,5 +136,5 @@ class OdooController:
                                     [[odoo_contact_id], update_data])
         except ConnectionRefusedError as err:
             raise OdooIsDeadError(err)
-        except xmlrpc.cl1ient.ProtocolError as err:
+        except xmlrpc.client.ProtocolError as err:
             raise OdooIsDeadError(err)
