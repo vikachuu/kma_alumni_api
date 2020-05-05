@@ -128,6 +128,7 @@ class OdooController:
 
                 'function': post_data.get('job_position', '')
             }
+            print(update_data)
             company_id = post_data.get('company_id')
             update_data.update({'parent_id': company_id}) if company_id is not None else None
 
