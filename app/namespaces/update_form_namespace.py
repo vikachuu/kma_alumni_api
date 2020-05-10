@@ -7,34 +7,34 @@ from app.utils.exceptions import OdooIsDeadError
 api_update_form = Namespace('update_form', description='Requests to update form model.')
 
 update_form_fields = api_update_form.model('Create update form.', {
-    "full_name_uk": fields.String,
-    "date_of_birth": fields.String,
-    "image": fields.String,
-    "email": fields.String,
+    "name": fields.String,
+    "birth_date": fields.String,
+    "image_1920": fields.String,
 
-    "country": fields.String,
-    "city": fields.String,
+    "contact_country": fields.String,
+    "contact_city": fields.String,
     "mobile": fields.String,
     "skype": fields.String,
     "telegram": fields.String,
     "viber": fields.String,
-    "facebook": fields.String,
-    "linkedin": fields.String,
+    "facebook_link": fields.String,
+    "linkedin_link": fields.String,
 
-    "is_bachelor": fields.Boolean,
+    "bachelor_degree": fields.Boolean,
     "bachelor_faculty": fields.String,
     "bachelor_speciality": fields.String,
-    "bachelor_entry_year": fields.String,
-    "bachelor_finish_year": fields.String,
+    "bachelor_year_in": fields.String,
+    "bachelor_year_out": fields.String,
 
-    "is_master": fields.Boolean,
+    "master_degree": fields.Boolean,
     "master_faculty": fields.String,
     "master_speciality": fields.String,
-    "master_entry_year": fields.String,
-    "master_finish_year": fields.String,
+    "master_year_in": fields.String,
+    "master_year_out": fields.String,
 
-    "company": fields.String,
-    "job_position": fields.String,
+    "parent_id": fields.Integer,
+    "company_name": fields.String,
+    "function": fields.String,
 
     "alumni_id": fields.Integer,
 })
@@ -96,34 +96,34 @@ class UpdateFormId(Resource):
 
 confirm_update_form_fields = api_update_form.model('Confirm update form.', {
     "form_id": fields.Integer,
-    "full_name_uk": fields.String,
-    "date_of_birth": fields.String,
-    "image": fields.String,
-    "email": fields.String,
+    "name": fields.String,
+    "birth_date": fields.String,
+    "image_1920": fields.String,
 
-    "country": fields.String,
-    "city": fields.String,
+    "contact_country": fields.String,
+    "contact_city": fields.String,
+
     "mobile": fields.String,
     "skype": fields.String,
     "telegram": fields.String,
     "viber": fields.String,
-    "facebook": fields.String,
-    "linkedin": fields.String,
+    "facebook_link": fields.String,
+    "linkedin_link": fields.String,
 
-    "is_bachelor": fields.Boolean,
+    "bachelor_degree": fields.Boolean,
     "bachelor_faculty": fields.String,
     "bachelor_speciality": fields.String,
-    "bachelor_entry_year": fields.String,
-    "bachelor_finish_year": fields.String,
+    "bachelor_year_in": fields.String,
+    "bachelor_year_out": fields.String,
 
-    "is_master": fields.Boolean,
+    "master_degree": fields.Boolean,
     "master_faculty": fields.String,
     "master_speciality": fields.String,
-    "master_entry_year": fields.String,
-    "master_finish_year": fields.String,
+    "master_year_in": fields.String,
+    "master_year_out": fields.String,
 
-    "company_id": fields.Integer,
-    "job_position": fields.String,
+    "parent_id": fields.Integer,
+    "function": fields.String,
 
     "alumni_id": fields.Integer,
     "operator_id": fields. Integer

@@ -23,13 +23,13 @@ class AlumniRegistered(Resource):
                     
                     'bachelor_faculty': 'Bachelor faculty value.',
                     'bachelor_speciality': 'Bachelor speciality value.',
-                    'bachelor_entry_year': 'Bachelor entry year value.',
-                    'bachelor_finish_year': 'Bachelor finish year value.',
+                    'bachelor_year_in': 'Bachelor entry year value.',
+                    'bachelor_year_out': 'Bachelor finish year value.',
 
                     'master_faculty': 'Master faculty value.',
                     'master_speciality': 'Master speciality value.',
-                    'master_entry_year': 'Master entry year value.',
-                    'master_finish_year': 'Master finish year value.',
+                    'master_year_in': 'Master entry year value.',
+                    'master_year_out': 'Master finish year value.',
                     
                     'user_confirmed': 'Alumni confirmed status values: `True`, `False`.'})
     def get(self):
@@ -41,13 +41,13 @@ class AlumniRegistered(Resource):
 
         bachelor_faculty = query_params.get('bachelor_faculty')
         bachelor_speciality = query_params.get('bachelor_speciality')
-        bachelor_entry_year = query_params.get('bachelor_entry_year')
-        bachelor_finish_year = query_params.get('bachelor_finish_year')
+        bachelor_year_in = query_params.get('bachelor_year_in')
+        bachelor_year_out = query_params.get('bachelor_year_out')
 
         master_faculty = query_params.get('master_faculty')
         master_speciality = query_params.get('master_speciality')
-        master_entry_year = query_params.get('master_entry_year')
-        master_finish_year = query_params.get('master_finish_year')
+        master_year_in = query_params.get('master_year_in')
+        master_year_out = query_params.get('master_year_out')
 
         user_confirmed = query_params.get('user_confirmed')
 
@@ -57,15 +57,15 @@ class AlumniRegistered(Resource):
         filter_list = []
         filter_list.append(['id', 'in', registered_alumni_odoo_ids])
 
-        filter_list.append(['bachelor_faculty', '=', bachelor_faculty]) if bachelor_entry_year else None
+        filter_list.append(['bachelor_faculty', '=', bachelor_faculty]) if bachelor_year_in else None
         filter_list.append(['bachelor_speciality', '=', bachelor_speciality]) if bachelor_speciality else None
-        filter_list.append(['bachelor_year_in', '=', bachelor_entry_year]) if bachelor_entry_year else None
-        filter_list.append(['bachelor_year_out', '=', bachelor_finish_year]) if bachelor_finish_year else None
+        filter_list.append(['bachelor_year_in', '=', bachelor_year_in]) if bachelor_year_in else None
+        filter_list.append(['bachelor_year_out', '=', bachelor_year_out]) if bachelor_year_out else None
 
         filter_list.append(['master_faculty', '=', master_faculty]) if master_faculty else None
         filter_list.append(['master_speciality', '=', master_speciality]) if master_speciality else None
-        filter_list.append(['master_year_in', '=', master_entry_year]) if master_entry_year else None
-        filter_list.append(['master_year_out', '=', master_finish_year]) if master_finish_year else None
+        filter_list.append(['master_year_in', '=', master_year_in]) if master_year_in else None
+        filter_list.append(['master_year_out', '=', master_year_out]) if master_year_out else None
 
         from app.controllers.odoo_controller import OdooController
         try:
@@ -101,13 +101,13 @@ class AlumniUnregistered(Resource):
 
                     'bachelor_faculty': 'Bachelor faculty value.',
                     'bachelor_speciality': 'Bachelor speciality value.',
-                    'bachelor_entry_year': 'Bachelor entry year value.',
-                    'bachelor_finish_year': 'Bachelor finish year value.',
+                    'bachelor_year_in': 'Bachelor entry year value.',
+                    'bachelor_year_out': 'Bachelor finish year value.',
 
                     'master_faculty': 'Master faculty value.',
                     'master_speciality': 'Master speciality value.',
-                    'master_entry_year': 'Master entry year value.',
-                    'master_finish_year': 'Master finish year value.',
+                    'master_year_in': 'Master entry year value.',
+                    'master_year_out': 'Master finish year value.',
                     
                     'invite_status': 'Invite status values: `not invited`, `invited`, `no response`, `rejected`.'})
     def get(self):
@@ -120,13 +120,13 @@ class AlumniUnregistered(Resource):
 
         bachelor_faculty = query_params.get('bachelor_faculty')
         bachelor_speciality = query_params.get('bachelor_speciality')
-        bachelor_entry_year = query_params.get('bachelor_entry_year')
-        bachelor_finish_year = query_params.get('bachelor_finish_year')
+        bachelor_year_in = query_params.get('bachelor_year_in')
+        bachelor_year_out = query_params.get('bachelor_year_out')
 
         master_faculty = query_params.get('master_faculty')
         master_speciality = query_params.get('master_speciality')
-        master_entry_year = query_params.get('master_entry_year')
-        master_finish_year = query_params.get('master_finish_year')
+        master_year_in = query_params.get('master_year_in')
+        master_year_out = query_params.get('master_year_out')
 
         invite_status = query_params.get('invite_status')
 
@@ -151,13 +151,13 @@ class AlumniUnregistered(Resource):
         filter_list.append(['id', 'in', not_registered_alumni_odoo_ids])
         filter_list.append(['bachelor_faculty', '=', bachelor_faculty]) if bachelor_faculty else None
         filter_list.append(['bachelor_speciality', '=', bachelor_speciality]) if bachelor_speciality else None
-        filter_list.append(['bachelor_year_in', '=', bachelor_entry_year]) if bachelor_entry_year else None
-        filter_list.append(['bachelor_year_out', '=', bachelor_finish_year]) if bachelor_finish_year else None
+        filter_list.append(['bachelor_year_in', '=', bachelor_year_in]) if bachelor_year_in else None
+        filter_list.append(['bachelor_year_out', '=', bachelor_year_out]) if bachelor_year_out else None
 
         filter_list.append(['master_faculty', '=', master_faculty]) if master_faculty else None
         filter_list.append(['master_speciality', '=', master_speciality]) if master_speciality else None
-        filter_list.append(['master_year_in', '=', master_entry_year]) if master_entry_year else None
-        filter_list.append(['master_year_out', '=', master_finish_year]) if master_finish_year else None
+        filter_list.append(['master_year_in', '=', master_year_in]) if master_year_in else None
+        filter_list.append(['master_year_out', '=', master_year_out]) if master_year_out else None
 
         # get contacts from odoo
         try:
@@ -192,13 +192,13 @@ class Alumni(Resource):
 
                     'bachelor_faculty': 'Bachelor faculty value.',
                     'bachelor_speciality': 'Bachelor speciality value.',
-                    'bachelor_entry_year': 'Bachelor entry year value.',
-                    'bachelor_finish_year': 'Bachelor finish year value.',
+                    'bachelor_year_in': 'Bachelor entry year value.',
+                    'bachelor_year_out': 'Bachelor finish year value.',
 
                     'master_faculty': 'Master faculty value.',
                     'master_speciality': 'Master speciality value.',
-                    'master_entry_year': 'Master entry year value.',
-                    'master_finish_year': 'Master finish year value.',})
+                    'master_year_in': 'Master entry year value.',
+                    'master_year_out': 'Master finish year value.',})
     def get(self):
         """Get all alumni (for alumni side).
         """
@@ -208,26 +208,26 @@ class Alumni(Resource):
 
         bachelor_faculty = query_params.get('bachelor_faculty')
         bachelor_speciality = query_params.get('bachelor_speciality')
-        bachelor_entry_year = query_params.get('bachelor_entry_year')
-        bachelor_finish_year = query_params.get('bachelor_finish_year')
+        bachelor_year_in = query_params.get('bachelor_year_in')
+        bachelor_year_out = query_params.get('bachelor_year_out')
 
         master_faculty = query_params.get('master_faculty')
         master_speciality = query_params.get('master_speciality')
-        master_entry_year = query_params.get('master_entry_year')
-        master_finish_year = query_params.get('master_finish_year')
+        master_year_in = query_params.get('master_year_in')
+        master_year_out = query_params.get('master_year_out')
 
         filter_list = []
         filter_list.append(['is_alumni', '=', True])
 
-        filter_list.append(['bachelor_faculty', '=', bachelor_faculty]) if bachelor_entry_year else None
+        filter_list.append(['bachelor_faculty', '=', bachelor_faculty]) if bachelor_year_in else None
         filter_list.append(['bachelor_speciality', '=', bachelor_speciality]) if bachelor_speciality else None
-        filter_list.append(['bachelor_year_in', '=', bachelor_entry_year]) if bachelor_entry_year else None
-        filter_list.append(['bachelor_year_out', '=', bachelor_finish_year]) if bachelor_finish_year else None
+        filter_list.append(['bachelor_year_in', '=', bachelor_year_in]) if bachelor_year_in else None
+        filter_list.append(['bachelor_year_out', '=', bachelor_year_out]) if bachelor_year_out else None
 
         filter_list.append(['master_faculty', '=', master_faculty]) if master_faculty else None
         filter_list.append(['master_speciality', '=', master_speciality]) if master_speciality else None
-        filter_list.append(['master_year_in', '=', master_entry_year]) if master_entry_year else None
-        filter_list.append(['master_year_out', '=', master_finish_year]) if master_finish_year else None
+        filter_list.append(['master_year_in', '=', master_year_in]) if master_year_in else None
+        filter_list.append(['master_year_out', '=', master_year_out]) if master_year_out else None
 
         # get all alumni from odoo
         from app.controllers.odoo_controller import OdooController

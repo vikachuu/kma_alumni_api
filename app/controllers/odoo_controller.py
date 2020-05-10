@@ -5,10 +5,11 @@ from app.utils.exceptions import OdooIsDeadError
 
 class OdooController:
     """
+    All requests to Odoo are gathered here.
     Each method has catch for ConnectionRefusedError and ProtocolError in case Odoo is down.
     Import `odoo_db, odoo_uid, odoo_password, odoo_models` should be inside `try-except` block in 
     order to catch the error.
-    If error is catch OdooIsDeadError raises.
+    If error is caught OdooIsDeadError raises.
     """
 
     @staticmethod
@@ -97,44 +98,43 @@ class OdooController:
     def update_odoo_contact(odoo_contact_id, post_data):
         try:
             update_data = {
-                'name': post_data.get('full_name_uk'),
-                'birth_date': post_data.get('date_of_birth'),
-                'image_1920': post_data.get('image', ''), # binary type
-                'email': post_data.get('email'),
+                'name': post_data.get('name'),
+                'birth_date': post_data.get('birth_date'),
+                'image_1920': post_data.get('image_1920', ''), # binary type
 
-                'contact_country': post_data.get('country', ''),
-                'contact_city': post_data.get('city', ''),
+                'contact_country': post_data.get('contact_country', ''),
+                'contact_city': post_data.get('contact_city', ''),
 
                 'mobile': post_data.get('mobile', ''),
                 'skype': post_data.get('skype', ''),
                 'telegram': post_data.get('telegram', ''),
                 'viber': post_data.get('viber', ''),
-                'facebook_link': post_data.get('facebook', ''),
-                'linkedin_link': post_data.get('linkedin', ''),
+                'facebook_link': post_data.get('facebook_link', ''),
+                'linkedin_link': post_data.get('linkedin_link', ''),
 
-                'bachelor_degree': post_data.get('is_bachelor', False),
-                'show_bachelor': post_data.get('is_bachelor', False),
+                'bachelor_degree': post_data.get('bachelor_degree', False),
+                'show_bachelor': post_data.get('bachelor_degree', False),
                 'bachelor_faculty': post_data.get('bachelor_faculty', ''), 
                 'bachelor_speciality': post_data.get('bachelor_speciality', ''),
-                'bachelor_year_in': post_data.get('bachelor_entry_year', ''),
-                'bachelor_year_out': post_data.get('bachelor_finish_year', ''),
+                'bachelor_year_in': post_data.get('bachelor_year_in', ''),
+                'bachelor_year_out': post_data.get('bachelor_year_out', ''),
 
-                'master_degree': post_data.get('is_master', False),
-                'show_master': post_data.get('is_master', False),
+                'master_degree': post_data.get('master_degree', False),
+                'show_master': post_data.get('master_degree', False),
                 'master_faculty': post_data.get('master_faculty', ''),
                 'master_speciality': post_data.get('master_speciality', ''),
-                'master_year_in': post_data.get('master_entry_year', ''),
-                'master_year_out': post_data.get('master_finish_year', ''),
+                'master_year_in': post_data.get('master_year_in', ''),
+                'master_year_out': post_data.get('master_year_out', ''),
 
-                'function': post_data.get('job_position', '')
+                'parent_id': post_data.get('parent_id', None),
+                'function': post_data.get('function', '')
             }
             print(update_data)
-            company_id = post_data.get('company_id')
-            update_data.update({'parent_id': company_id}) if company_id is not None else None
 
             from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
             odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'write',
                                     [[odoo_contact_id], update_data])
+            # TODO: add catch Odoo exceptions when there is no operator or alumni
         except ConnectionRefusedError as err:
             raise OdooIsDeadError(err)
         except xmlrpc.client.ProtocolError as err:
