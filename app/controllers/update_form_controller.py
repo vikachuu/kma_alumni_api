@@ -25,6 +25,8 @@ class UpdateFormController:
                 facebook_link=post_data.get('facebook_link'),
                 linkedin_link=post_data.get('linkedin_link'),
 
+                diploma_naukma=post_data.get('diploma_naukma'),
+
                 bachelor_degree=post_data.get('bachelor_degree'),
                 bachelor_faculty=post_data.get('bachelor_faculty'),
                 bachelor_speciality=post_data.get('bachelor_speciality'),
@@ -64,6 +66,8 @@ class UpdateFormController:
                 "viber": update_form.viber,
                 "facebook_link": update_form.facebook_link,
                 "linkedin_link": update_form.linkedin_link,
+
+                "diploma_naukma": update_form.diploma_naukma,
 
                 "bachelor_degree": update_form.bachelor_degree,
                 "bachelor_faculty": update_form.bachelor_faculty,
@@ -115,6 +119,8 @@ class UpdateFormController:
                 "facebook_link": update_form.facebook_link,
                 "linkedin_link": update_form.linkedin_link,
 
+                "diploma_naukma": update_form.diploma_naukma,
+
                 "bachelor_degree": update_form.bachelor_degree,
                 "bachelor_faculty": update_form.bachelor_faculty,
                 "bachelor_speciality": update_form.bachelor_speciality,
@@ -156,6 +162,8 @@ class UpdateFormController:
                 "viber": update_form.viber,
                 "facebook_link": update_form.facebook_link,
                 "linkedin_link": update_form.linkedin_link,
+
+                "diploma_naukma": update_form.diploma_naukma,
 
                 "bachelor_degree": update_form.bachelor_degree,
                 "bachelor_faculty": update_form.bachelor_faculty,

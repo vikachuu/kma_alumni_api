@@ -112,6 +112,8 @@ class OdooController:
                 'facebook_link': post_data.get('facebook_link', ''),
                 'linkedin_link': post_data.get('linkedin_link', ''),
 
+                'diploma_naukma': post_data.get('diploma_naukma', False),
+
                 'bachelor_degree': post_data.get('bachelor_degree', False),
                 'show_bachelor': post_data.get('bachelor_degree', False),
                 'bachelor_faculty': post_data.get('bachelor_faculty', ''), 

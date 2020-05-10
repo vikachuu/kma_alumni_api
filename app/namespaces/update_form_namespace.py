@@ -20,6 +20,8 @@ update_form_fields = api_update_form.model('Create update form.', {
     "facebook_link": fields.String,
     "linkedin_link": fields.String,
 
+    "diploma_naukma": fields.Boolean,
+
     "bachelor_degree": fields.Boolean,
     "bachelor_faculty": fields.String,
     "bachelor_speciality": fields.String,
@@ -109,6 +111,8 @@ confirm_update_form_fields = api_update_form.model('Confirm update form.', {
     "viber": fields.String,
     "facebook_link": fields.String,
     "linkedin_link": fields.String,
+
+    "diploma_naukma": fields.Boolean,
 
     "bachelor_degree": fields.Boolean,
     "bachelor_faculty": fields.String,
