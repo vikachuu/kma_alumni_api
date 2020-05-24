@@ -93,3 +93,10 @@ class UpdateForm(db.Model):
 
         self.alumni_id = alumni_id
         self.operator_id = operator_id
+
+
+    def update(self, data):
+        for key, item in data.items():
+            if hasattr(self, key):
+                setattr(self, key, item)
+            db.session.commit()

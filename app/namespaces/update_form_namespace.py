@@ -82,18 +82,68 @@ change_update_form_status_fields = api_update_form.model('Update update form sta
     'operator_id': fields.Integer,
 })
 
-@api_update_form.route("/<form_id>")
-class UpdateFormId(Resource):
+@api_update_form.route("/<form_id>/status")
+class UpdateFormStatus(Resource):
 
     @api_update_form.doc(body=change_update_form_status_fields, params={
         'form_id': "Id of update form in which status changed.",
     })
-    def put(self, form_id):
+    def patch(self, form_id):
         """Change update form status and operator id who did the change.
         """
         from app.controllers.update_form_controller import UpdateFormController
         put_data = request.get_json()
         return UpdateFormController.change_update_form_status(form_id, put_data)
+
+
+edit_update_form_fields = api_update_form.model('Edit update form.', {
+    "name": fields.String,
+    "birth_date": fields.String,
+    "image_1920": fields.String,
+
+    "contact_country": fields.String,
+    "contact_city": fields.String,
+    "mobile": fields.String,
+    "skype": fields.String,
+    "telegram": fields.String,
+    "viber": fields.String,
+    "facebook_link": fields.String,
+    "linkedin_link": fields.String,
+
+    "diploma_naukma": fields.Boolean,
+
+    "bachelor_degree": fields.Boolean,
+    "bachelor_faculty": fields.String,
+    "bachelor_speciality": fields.String,
+    "bachelor_year_in": fields.String,
+    "bachelor_year_out": fields.String,
+
+    "master_degree": fields.Boolean,
+    "master_faculty": fields.String,
+    "master_speciality": fields.String,
+    "master_year_in": fields.String,
+    "master_year_out": fields.String,
+
+    "parent_id": fields.Integer,
+    "company_name": fields.String,
+    "function": fields.String,
+
+    "alumni_id": fields.Integer,
+    "operator_id": fields.Integer,
+})
+
+@api_update_form.route("/<form_id>")
+class UpdateFormId(Resource):
+
+    @api_update_form.doc(body=edit_update_form_fields, params={
+        'form_id': "Id of update.",
+    })
+    def put(self, form_id):
+        """Edit update form by operator.
+        """
+        from app.controllers.update_form_controller import UpdateFormController
+        put_data = request.get_json()
+        return UpdateFormController.edit_update_form(form_id, put_data)
 
 
 confirm_update_form_fields = api_update_form.model('Confirm update form.', {

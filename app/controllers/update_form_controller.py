@@ -205,6 +205,21 @@ class UpdateFormController:
                 }, 200
 
     @staticmethod
+    def edit_update_form(form_id, put_data):
+        update_form = UpdateForm.query.filter_by(form_id=form_id).first()
+        if not update_form:
+            return {
+                "error_id": "form_not_found_error",
+                "message": "Form not found."
+            }, 404
+        else:
+            update_form.update(put_data)
+
+            return {
+                "message": "Form successfully updated."
+                }, 200
+
+    @staticmethod
     def get_update_form_by_id(form_id):
         update_form = UpdateForm.query.filter_by(form_id=form_id).first()
         if not update_form:
