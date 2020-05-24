@@ -203,3 +203,50 @@ class UpdateFormController:
             return {
                 "message": "Form successfully updated."
                 }, 200
+
+    @staticmethod
+    def get_update_form_by_id(form_id):
+        update_form = UpdateForm.query.filter_by(form_id=form_id).first()
+        if not update_form:
+            return {
+                "error_id": "form_not_found_error",
+                "message": "Form not found."
+            }, 404
+        else:
+            return {
+                "form_id": update_form.form_id,
+                "form_status": update_form.form_status,
+                "name": update_form.name,
+                "birth_date": update_form.birth_date.strftime('%Y-%m-%d'),
+                "image_1920": update_form.image_1920,
+
+                "contact_country": update_form.contact_country,
+                "contact_city": update_form.contact_city,
+                "mobile": update_form.mobile,
+                "skype": update_form.skype,
+                "telegram": update_form.telegram,
+                "viber": update_form.viber,
+                "facebook_link": update_form.facebook_link,
+                "linkedin_link": update_form.linkedin_link,
+
+                "diploma_naukma": update_form.diploma_naukma,
+
+                "bachelor_degree": update_form.bachelor_degree,
+                "bachelor_faculty": update_form.bachelor_faculty,
+                "bachelor_speciality": update_form.bachelor_speciality,
+                "bachelor_year_in": update_form.bachelor_year_in,
+                "bachelor_year_out": update_form.bachelor_year_out,
+
+                "master_degree": update_form.master_degree,
+                "master_faculty": update_form.master_faculty,
+                "master_speciality": update_form.master_speciality,
+                "master_year_in": update_form.master_year_in,
+                "master_year_out": update_form.master_year_out,
+
+                "parent_id": update_form.parent_id,
+                "company_name": update_form.company_name,
+                "function": update_form.function,
+
+                "alumni_id": update_form.alumni_id,
+                "operator_id": update_form.operator_id,
+                }, 200

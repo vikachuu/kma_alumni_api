@@ -97,45 +97,22 @@ class OdooController:
     @staticmethod
     def update_odoo_contact(odoo_contact_id, post_data):
         try:
+            # TODO: change this fucking bad hot fix
             update_data = {
-                'name': post_data.get('name'),
-                'birth_date': post_data.get('birth_date'),
-                'image_1920': post_data.get('image_1920', ''), # binary type
+                k: v for k, v in post_data.items() 
+                if v is not None and k not in ["form_id", "form_status", "alumni_id", "operator_id"]}
 
-                'contact_country': post_data.get('contact_country', ''),
-                'contact_city': post_data.get('contact_city', ''),
-
-                'mobile': post_data.get('mobile', ''),
-                'skype': post_data.get('skype', ''),
-                'telegram': post_data.get('telegram', ''),
-                'viber': post_data.get('viber', ''),
-                'facebook_link': post_data.get('facebook_link', ''),
-                'linkedin_link': post_data.get('linkedin_link', ''),
-
-                'diploma_naukma': post_data.get('diploma_naukma', False),
-
-                'bachelor_degree': post_data.get('bachelor_degree', False),
-                'show_bachelor': post_data.get('bachelor_degree', False),
-                'bachelor_faculty': post_data.get('bachelor_faculty', ''), 
-                'bachelor_speciality': post_data.get('bachelor_speciality', ''),
-                'bachelor_year_in': post_data.get('bachelor_year_in', ''),
-                'bachelor_year_out': post_data.get('bachelor_year_out', ''),
-
-                'master_degree': post_data.get('master_degree', False),
-                'show_master': post_data.get('master_degree', False),
-                'master_faculty': post_data.get('master_faculty', ''),
-                'master_speciality': post_data.get('master_speciality', ''),
-                'master_year_in': post_data.get('master_year_in', ''),
-                'master_year_out': post_data.get('master_year_out', ''),
-
-                'parent_id': post_data.get('parent_id', None),
-                'function': post_data.get('function', '')
-            }
-            print(update_data)
-
+            # update contact in odoo
             from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
             odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'write',
                                     [[odoo_contact_id], update_data])
+
+            # get record name after having changed it
+            contact = odoo_models.execute_kw(odoo_db, odoo_uid, odoo_password, 'res.partner', 'name_get',
+                                            [[odoo_contact_id]])
+            print(f"Odoo contact updated: {contact}")
+            return contact
+
             # TODO: add catch Odoo exceptions when there is no operator or alumni
         except ConnectionRefusedError as err:
             raise OdooIsDeadError(err)

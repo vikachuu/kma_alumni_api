@@ -1,5 +1,5 @@
 from flask import request
-from flask_restplus import Namespace, Resource, fields
+from flask_restplus import Namespace, Resource, fields, abort
 
 from app.utils.exceptions import OdooIsDeadError
 
@@ -97,68 +97,45 @@ class UpdateFormId(Resource):
 
 
 confirm_update_form_fields = api_update_form.model('Confirm update form.', {
-    "form_id": fields.Integer,
-    "name": fields.String,
-    "birth_date": fields.String,
-    "image_1920": fields.String,
-
-    "contact_country": fields.String,
-    "contact_city": fields.String,
-
-    "mobile": fields.String,
-    "skype": fields.String,
-    "telegram": fields.String,
-    "viber": fields.String,
-    "facebook_link": fields.String,
-    "linkedin_link": fields.String,
-
-    "diploma_naukma": fields.Boolean,
-
-    "bachelor_degree": fields.Boolean,
-    "bachelor_faculty": fields.String,
-    "bachelor_speciality": fields.String,
-    "bachelor_year_in": fields.String,
-    "bachelor_year_out": fields.String,
-
-    "master_degree": fields.Boolean,
-    "master_faculty": fields.String,
-    "master_speciality": fields.String,
-    "master_year_in": fields.String,
-    "master_year_out": fields.String,
-
-    "parent_id": fields.Integer,
-    "function": fields.String,
-
-    "alumni_id": fields.Integer,
-    "operator_id": fields. Integer
+    "operator_id": fields.Integer
 })
 
 
-@api_update_form.route("/confirm")
+@api_update_form.route("/<form_id>/confirm")
 class UpdateFormConfirm(Resource):
 
-    @api_update_form.doc(body=confirm_update_form_fields)
-    def post(self):
+    @api_update_form.doc(body=confirm_update_form_fields, params={
+        'form_id': "Id of update form to confirm.",
+    })
+    def post(self, form_id):
         """Confirm update form - send data to odoo.
         """
         post_data = request.get_json()
-        print(post_data)
+
+        from app.controllers.update_form_controller import UpdateFormController
+        update_data = UpdateFormController.get_update_form_by_id(form_id)[0]
+        print("UPDATE DATA")
+        print(update_data)
+
         from app.controllers.alumni_controller import AlumniController
-        odoo_contact_id = AlumniController.get_odoo_contact_id_by_alumni_id(post_data.get('alumni_id'))
+        odoo_contact_id = AlumniController.get_odoo_contact_id_by_alumni_id(update_data.get("alumni_id"))
 
         from app.controllers.odoo_controller import OdooController
         try:
-            OdooController.update_odoo_contact(odoo_contact_id, post_data)
+            contact = OdooController.update_odoo_contact(odoo_contact_id, update_data)
         except OdooIsDeadError as err:
             abort(503, err, error_id='odoo_connection_error')
+        else:
+            # TODO: raise error in update_odoo_contact
+            if contact is None:
+                return {"message": "Error in updating odoo contact."}, 400
+            else:
+                # else if success - change update form status and operator who confirmed
+                from app.controllers.update_form_controller import UpdateFormController
+                put_data = {
+                    'form_status': 'approved',
+                    'operator_id': post_data.get('operator_id')
+                }
+                UpdateFormController.change_update_form_status(form_id, put_data)
 
-        # if success - change update form status and operator who confirmed
-        from app.controllers.update_form_controller import UpdateFormController
-        form_id = post_data.get('form_id')
-        put_data = {
-            'form_status': 'approved',
-            'operator_id': post_data.get('operator_id')
-        }
-        UpdateFormController.change_update_form_status(form_id, put_data)
-
-        return {"message": "Odoo contact successfully updated."}, 200
+                return {"message": "Odoo contact successfully updated."}, 200
