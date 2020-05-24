@@ -324,6 +324,7 @@ class AlumniGroupmates(Resource):
         except OdooIsDeadError as err:
             abort(503, err, error_id='odoo_connection_error')
 
+        # TODO: throw contact not found error
         if not len(contacts):
             return {
                 "error_id": "odoo_contact_not_found_error",
@@ -331,6 +332,7 @@ class AlumniGroupmates(Resource):
                 }, 404
 
         contact = contacts[0]
+        print(f"CONTACT {contact}")
 
         # append filters for groupmates
         bachelor_speciality = contact.get('bachelor_speciality')
@@ -353,8 +355,8 @@ class AlumniGroupmates(Resource):
 
         else:
             return {
-                "error_id": "no_required_query_params_error",
-                "message": "No required query parameters."
+                "error_id": "no_required_groupmates_fields_error",
+                "message": "No required fields to get groupmates: should be both speciality and entry year given."
                 }, 400
 
         # get all groupmates (both bachelor and masters)
