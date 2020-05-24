@@ -57,7 +57,7 @@ class AlumniRegistered(Resource):
         filter_list = []
         filter_list.append(['id', 'in', registered_alumni_odoo_ids])
 
-        filter_list.append(['bachelor_faculty', '=', bachelor_faculty]) if bachelor_year_in else None
+        filter_list.append(['bachelor_faculty', '=', bachelor_faculty]) if bachelor_faculty else None
         filter_list.append(['bachelor_speciality', '=', bachelor_speciality]) if bachelor_speciality else None
         filter_list.append(['bachelor_year_in', '=', bachelor_year_in]) if bachelor_year_in else None
         filter_list.append(['bachelor_year_out', '=', bachelor_year_out]) if bachelor_year_out else None
@@ -219,7 +219,7 @@ class Alumni(Resource):
         filter_list = []
         filter_list.append(['is_alumni', '=', True])
 
-        filter_list.append(['bachelor_faculty', '=', bachelor_faculty]) if bachelor_year_in else None
+        filter_list.append(['bachelor_faculty', '=', bachelor_faculty]) if bachelor_faculty else None
         filter_list.append(['bachelor_speciality', '=', bachelor_speciality]) if bachelor_speciality else None
         filter_list.append(['bachelor_year_in', '=', bachelor_year_in]) if bachelor_year_in else None
         filter_list.append(['bachelor_year_out', '=', bachelor_year_out]) if bachelor_year_out else None
