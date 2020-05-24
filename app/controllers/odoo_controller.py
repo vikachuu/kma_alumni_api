@@ -82,6 +82,7 @@ class OdooController:
             raise OdooIsDeadError(err)
         return companies
 
+    @staticmethod
     def get_odoo_countries():
         try:
             from app.main import odoo_db, odoo_uid, odoo_password, odoo_models
