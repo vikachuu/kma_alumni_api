@@ -86,7 +86,7 @@ class AlumniRegistered(Resource):
 
         # filter contact by user confirmed status of exists
         if user_confirmed is not None:
-            contacts = [x for x in contacts if x['user_confirmed']]
+            contacts = [x for x in contacts if x['user_confirmed'] == user_confirmed]
 
 
         return contacts, 200
