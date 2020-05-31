@@ -258,8 +258,21 @@ class Alumni(Resource):
         return AlumniController.create_alumni_user(post_data)
 
 
-@api_alumni.route("/<odoo_contact_id>")
+@api_alumni.route("/<alumni_id>")
 class AlumniId(Resource):
+
+    @api_alumni.doc(params={
+                    'alumni_id': 'An alumni id.',})
+    def delete(self, alumni_id):
+        """Delete alumni on alumni service side
+        """
+        from app.controllers.alumni_controller import AlumniController
+        response = AlumniController.delete_alumni_user(alumni_id)
+        return response
+
+
+@api_alumni.route("/<odoo_contact_id>")
+class AlumniOdooContactId(Resource):
 
     @api_alumni.doc(params={
                     'odoo_contact_id': 'An Odoo contact id.',})

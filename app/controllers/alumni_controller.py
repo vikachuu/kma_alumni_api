@@ -72,6 +72,7 @@ class AlumniController:
 
     @staticmethod
     def update_alumni_user(put_data):
+        # TODO: rename method to update_status_confirmed
         alumni = Alumni.query.filter_by(alumni_id=put_data.get('alumni_id')).first()
         if not alumni:
             return {
@@ -85,4 +86,20 @@ class AlumniController:
         
         return {
             "message": "Alumni succesfully updated."
+            }, 200
+
+    @staticmethod
+    def delete_alumni_user(alumni_id):
+        alumni = Alumni.query.filter_by(alumni_id=alumni_id).first()
+        if not alumni:
+            return {
+                "error_id": "alumni_not_found_error",
+                "message": "Alumni not found."
+                }, 404
+
+        db.session.delete(alumni)
+        db.session.commit()
+        # TODO: throw error if cannot delete -  when update form exists
+        return {
+            "message": "Alumni succesfully deleted."
             }, 200
