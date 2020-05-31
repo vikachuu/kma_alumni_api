@@ -16,6 +16,7 @@ register_fields = api_register.model('Register alumni payload.', {
     "odoo_contact_token": fields.String,
     "email": fields.String,
     "password": fields.String,
+    "allow_show_contacts": fields.String,
 })
 
 
