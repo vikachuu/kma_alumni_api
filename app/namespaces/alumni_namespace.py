@@ -86,8 +86,9 @@ class AlumniRegistered(Resource):
 
         # filter contact by user confirmed status of exists
         if user_confirmed is not None:
-            contacts = [x for x in contacts if str(x['user_confirmed']) == user_confirmed]
-            # TODO: fix str() cast (cause query param is str)
+            user_confirmed = True if user_confirmed == 'true' else False
+            contacts = [x for x in contacts if x['user_confirmed'] == user_confirmed]
+            # TODO: fix user confirmed query param is str
 
 
         return contacts, 200
