@@ -273,6 +273,18 @@ class AlumniId(Resource):
         return response
 
 
+@api_alumni.route("/<alumni_id>/active_update_form_exists")
+class AlumniIdUpdateForm(Resource):
+
+    @api_alumni.doc(params={'alumni_id': 'An alumni id.',})
+    def get(self, alumni_id):
+        """Get active update form if exists.
+        """
+        from app.controllers.update_form_controller import UpdateFormController
+        response = UpdateFormController.get_active_update_form_exists(alumni_id)
+        return response
+
+
 @api_alumni.route("/<odoo_contact_id>")
 class AlumniOdooContactId(Resource):
 

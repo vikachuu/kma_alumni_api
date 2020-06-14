@@ -265,3 +265,8 @@ class UpdateFormController:
                 "alumni_id": update_form.alumni_id,
                 "operator_id": update_form.operator_id,
                 }, 200
+
+    @staticmethod
+    def get_active_update_form_exists(alumni_id):
+        update_form = UpdateForm.query.filter_by(alumni_id=alumni_id, form_status="new").first()
+        return update_form is not None
