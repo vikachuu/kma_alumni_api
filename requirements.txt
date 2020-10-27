@@ -10,6 +10,6 @@ flask-heroku==0.1.9
 flask-cors==3.0.8
 Werkzeug==0.16.1
 flask-bcrypt==0.7.1
-cryptography==2.8
+cryptography==3.2
 flask-jwt-extended==3.24.1
 python-dateutil==2.8.1
